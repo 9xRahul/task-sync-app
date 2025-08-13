@@ -1,0 +1,68 @@
+# Flutter/Dart/Pub related
+.dart_tool/
+.packages
+build/
+pubspec.lock
+.flutter-plugins
+.flutter-plugins-dependencies
+.melos_tool/
+
+# Symbolic link created by `flutter`
+.symlinks/
+
+# iOS related
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/ephemeral/
+ios/.generated/
+ios/Pods/
+ios/Runner.xcworkspace/
+ios/build/
+ios/Runner/GeneratedPluginRegistrant.*
+
+# Android related
+android/.gradle/
+android/captures/
+android/.idea/
+android/local.properties
+android/key.properties
+android/app/*.keystore
+android/app/*.jks
+android/app/*.keystore
+
+# Web related
+web/.dart_tool/
+web/.packages
+web/build/
+
+# macOS related
+macos/Flutter/GeneratedPluginRegistrant.swift
+macos/Flutter/ephemeral/
+macos/build/
+
+# Windows related
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugin_registrant.h
+windows/flutter/generated_plugins.cmake
+windows/build/
+
+# Linux related
+linux/flutter/generated_plugin_registrant.cc
+linux/flutter/generated_plugin_registrant.h
+linux/flutter/generated_plugins.cmake
+linux/build/
+
+# VS Code related
+.vscode/
+.idea/
+
+# IntelliJ related
+*.iml
+
+# Other files
+*.log
+*.tmp
+*.swp
+*.DS_Store
+*.lock
