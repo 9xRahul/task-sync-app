@@ -19,7 +19,7 @@ void updatePasswordDialouge({
     builder: (dialogContext) {
       return BlocListener<SigninBloc, SigninState>(
         listener: (_, state) {
-          if (!state.error && !state.loading) {
+          if (!state.error && !state.loading && !state.buttonIsLoading) {
             ToastHelper.show(
               "Password updated successfully",
               bgColor: Colors.green,
@@ -31,7 +31,7 @@ void updatePasswordDialouge({
               MaterialPageRoute(builder: (_) => LoginScreen()),
               (route) => false,
             );
-          } else if (state.error && !state.loading) {
+          } else if (state.error && !state.loading && !state.buttonIsLoading) {
             ToastHelper.show(
               state.message,
               bgColor: Colors.red,
@@ -110,7 +110,7 @@ void updatePasswordDialouge({
                   },
                   child: BlocBuilder<SigninBloc, SigninState>(
                     builder: (context, state) {
-                      if (state.loading) {
+                      if (state.buttonIsLoading) {
                         return const SizedBox(
                           height: 20,
                           width: 20,

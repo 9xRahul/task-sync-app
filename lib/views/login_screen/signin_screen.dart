@@ -8,6 +8,7 @@ import 'package:tasksync/helpers/forgot_password_dialouge.dart';
 import 'package:tasksync/helpers/text_field_fidget.dart';
 import 'package:tasksync/helpers/toast_messenger.dart';
 import 'package:tasksync/helpers/verification_dialouge.dart';
+import 'package:tasksync/views/home_screen/home_screen.dart';
 import 'package:tasksync/views/signup_screen/signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -69,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Colors.white,
                         width: SizeConfig().authLogoWidth,
                         height: SizeConfig().authLogoHeight,
-                        image: AssetImage('assets/images/signup.png'),
+                        image: AssetImage('assets/images/login.png'),
                       ),
 
                       buildTextField(
@@ -128,18 +129,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       SizedBox(height: 20),
                       BlocConsumer<SigninBloc, SigninState>(
+                        listenWhen: (previous, current) =>
+                            previous.authToken != current.authToken ||
+                            previous.loading != current.loading,
+
                         listener: (context, state) {
-                          if (state.error) {
+                          if (state.error && state.authToken.isEmpty) {
                             ToastHelper.show(
                               state.message,
                               bgColor: Colors.red,
                               textColor: Colors.white,
                             );
-                          } else if (!state.error && state.message.isNotEmpty) {
-                            ToastHelper.show(
-                              state.message,
-                              bgColor: Colors.green,
-                              textColor: Colors.white,
+                          } else if (!state.error &&
+                              state.message.isNotEmpty &&
+                              state.authToken.isNotEmpty) {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (_) => HomeScreen()),
                             );
                           }
                         },

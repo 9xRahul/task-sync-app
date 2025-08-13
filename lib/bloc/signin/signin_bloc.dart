@@ -23,7 +23,9 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
     on<UpdatePasswordEvent>(_updatePasswordEvent);
   }
   void _loginSubmitted(LoginSubmitted event, Emitter<SigninState> emit) async {
-    emit(state.copyWith(loading: true, error: false, message: ""));
+    emit(
+      state.copyWith(loading: true, error: false, message: "", authToken: ""),
+    );
     try {
       final response = await authRepository.login(
         email: event.email,
@@ -36,6 +38,7 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
             loading: false,
             error: false,
             message: response["message"],
+            authToken: response["token"],
           ),
         );
       } else {
@@ -44,11 +47,19 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
             loading: false,
             error: true,
             message: response["message"],
+            authToken: "",
           ),
         );
       }
     } catch (e) {
-      emit(state.copyWith(loading: false, error: true, message: e.toString()));
+      emit(
+        state.copyWith(
+          loading: false,
+          error: true,
+          message: e.toString(),
+          authToken: "",
+        ),
+      );
     }
   }
 
@@ -56,7 +67,14 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
     UpdatePasswordEvent event,
     Emitter<SigninState> emit,
   ) async {
-    emit(state.copyWith(loading: true, error: false, message: ""));
+    emit(
+      state.copyWith(
+        loading: false,
+        error: false,
+        message: "",
+        buttonIsLoading: true,
+      ),
+    );
     try {
       final response = await authRepository.updatePassword(
         resetToken: state.passwordResettoken,
@@ -69,6 +87,7 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
             loading: false,
             error: false,
             message: response["message"],
+            buttonIsLoading: false,
           ),
         );
       } else {
@@ -77,11 +96,19 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
             loading: false,
             error: true,
             message: response["message"],
+            buttonIsLoading: false,
           ),
         );
       }
     } catch (e) {
-      emit(state.copyWith(loading: false, error: true, message: e.toString()));
+      emit(
+        state.copyWith(
+          loading: false,
+          error: true,
+          message: e.toString(),
+          buttonIsLoading: false,
+        ),
+      );
     }
   }
 
@@ -91,7 +118,8 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
   ) async {
     emit(
       state.copyWith(
-        loading: true,
+        loading: false,
+        buttonIsLoading: true,
         error: false,
         message: "",
         passwordResettoken: "",
@@ -108,6 +136,7 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
             message: response["message"],
             isResettingPassword: true,
             passwordResettoken: response["resettoken"],
+            buttonIsLoading: false,
           ),
         );
       } else {
@@ -116,11 +145,19 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
             loading: false,
             error: true,
             message: response["message"],
+            isResettingPassword: false,
           ),
         );
       }
     } catch (e) {
-      emit(state.copyWith(loading: false, error: true, message: e.toString()));
+      emit(
+        state.copyWith(
+          loading: false,
+          error: true,
+          message: e.toString(),
+          buttonIsLoading: false,
+        ),
+      );
     }
   }
 }

@@ -15,6 +15,7 @@ class AuthRepository {
       "message": "",
       "errors": [],
       "user": null,
+      "token": "",
     };
 
     try {
@@ -37,8 +38,10 @@ class AuthRepository {
         apiResponse['message'] = jsonResponse['message'] ?? "Login successful";
         apiResponse['user'] = userModelData;
 
-        // ✅ Save token and user
         String token = jsonResponse['token'] ?? '';
+
+        apiResponse['token'] = token;
+
         await AuthStorage.saveLoginData(loginData: userModelData, token: token);
 
         return apiResponse;

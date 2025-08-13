@@ -67,7 +67,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         color: Colors.white,
                         width: SizeConfig().authLogoWidth,
                         height: SizeConfig().authLogoHeight,
-                        image: AssetImage('assets/images/login.png'),
+                        image: AssetImage('assets/images/signup.png'),
                       ),
 
                       buildTextField(

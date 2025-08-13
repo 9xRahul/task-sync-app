@@ -6,6 +6,8 @@ class SigninState extends Equatable {
   final String message;
   final bool isResettingPassword;
   final String passwordResettoken;
+  final bool buttonIsLoading;
+  final String authToken;
 
   SigninState({
     this.loading = false,
@@ -13,6 +15,8 @@ class SigninState extends Equatable {
     this.message = "",
     this.isResettingPassword = false,
     this.passwordResettoken = "",
+    this.buttonIsLoading = false,
+    this.authToken = "",
   });
 
   @override
@@ -22,6 +26,8 @@ class SigninState extends Equatable {
     message,
     isResettingPassword,
     passwordResettoken,
+    buttonIsLoading,
+    authToken,
   ];
   SigninState copyWith({
     bool? loading,
@@ -29,6 +35,8 @@ class SigninState extends Equatable {
     String? message,
     bool? isResettingPassword,
     String? passwordResettoken,
+    bool? buttonIsLoading,
+    String? authToken,
   }) {
     return SigninState(
       loading: loading ?? this.loading,
@@ -36,6 +44,8 @@ class SigninState extends Equatable {
       message: message ?? this.message,
       isResettingPassword: isResettingPassword ?? this.isResettingPassword,
       passwordResettoken: passwordResettoken ?? this.passwordResettoken,
+      buttonIsLoading: buttonIsLoading ?? this.buttonIsLoading,
+      authToken: authToken ?? this.authToken,
     );
   }
 }

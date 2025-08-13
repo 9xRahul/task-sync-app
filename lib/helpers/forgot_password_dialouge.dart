@@ -23,13 +23,16 @@ void resetPasswordDialouge({
           // - Error flag changes
           return previous.loading != current.loading ||
               previous.isResettingPassword != current.isResettingPassword ||
-              previous.error != current.error;
+              previous.error != current.error ||
+              previous.buttonIsLoading != current.buttonIsLoading;
         },
         listener: (_, state) {
-          if (!state.loading && state.isResettingPassword) {
+          if (!state.loading &&
+              state.isResettingPassword &&
+              !state.buttonIsLoading) {
             // ✅ API call finished and reset process started successfully
             updatePasswordDialouge(context: context);
-          } else if (state.error && !state.loading) {
+          } else if (state.error && !state.loading && !state.buttonIsLoading) {
             // Show error message only when API finishes with error
             ToastHelper.show(
               state.message,
@@ -109,7 +112,7 @@ void resetPasswordDialouge({
                                 );
                               }
                             },
-                      child: state.loading
+                      child: state.buttonIsLoading
                           ? const SizedBox(
                               height: 20,
                               width: 20,
