@@ -40,75 +40,83 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: ColorConfig.appBArIconColor,
-                image: DecorationImage(
-                  image: AssetImage("assets/images/authbg.jpg"),
-                  fit: BoxFit.cover,
+        child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(ImageConfig.splashBg), // your bg image
+              opacity: .1,
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: ColorConfig.appBArIconColor,
+                  image: DecorationImage(
+                    image: AssetImage(ImageConfig.splashBg),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image(
+                      image: AssetImage(ImageConfig.logo),
+                      height: 100,
+                      width: 100,
+                    ),
+                    textWidget(
+                      text: "Welcome $user",
+                      color: ColorConfig.textLight,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ],
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image(
-                    image: AssetImage(ImageConfig.logo),
-                    height: 100,
-                    width: 100,
-                  ),
-                  textWidget(
-                    text: "Welcome $user",
-                    color: ColorConfig.textLight,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ],
+
+              drawerListTile(
+                title: "Home",
+                icon: Icons.home,
+                iconColor: ColorConfig.textPrimary,
+                iconSize: SizeConfig().drawerIconSize,
+                textSize: SizeConfig().drawerFontSize,
+                onTap: () {
+                  print("Home tapped");
+                },
               ),
-            ),
-
-            drawerListTile(
-              title: "Home",
-              icon: Icons.home,
-              iconColor: ColorConfig.textPrimary,
-              iconSize: SizeConfig().drawerIconSize,
-              textSize: SizeConfig().drawerFontSize,
-              onTap: () {
-                print("Home tapped");
-              },
-            ),
-
-            drawerListTile(
-              title: "Settings",
-              icon: Icons.settings,
-              iconColor: ColorConfig.textPrimary,
-              iconSize: SizeConfig().drawerIconSize,
-              textSize: SizeConfig().drawerFontSize,
-              onTap: () {
-                print("Settings tapped");
-              },
-            ),
-            drawerListTile(
-              title: "Logout",
-              icon: Icons.logout_outlined,
-              iconColor: ColorConfig.textPrimary,
-              iconSize: SizeConfig().drawerIconSize,
-              textSize: SizeConfig().drawerFontSize,
-              onTap: () {
-                AuthStorage.logout();
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                  (Route<dynamic> route) =>
-                      false, // removes all previous routes
-                );
-              },
-            ),
-          ],
+              drawerListTile(
+                title: "Settings",
+                icon: Icons.settings,
+                iconColor: ColorConfig.textPrimary,
+                iconSize: SizeConfig().drawerIconSize,
+                textSize: SizeConfig().drawerFontSize,
+                onTap: () {
+                  print("Settings tapped");
+                },
+              ),
+              drawerListTile(
+                title: "Logout",
+                icon: Icons.logout_outlined,
+                iconColor: ColorConfig.textPrimary,
+                iconSize: SizeConfig().drawerIconSize,
+                textSize: SizeConfig().drawerFontSize,
+                onTap: () {
+                  AuthStorage.logout();
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
+
       appBar: AppBar(
         leading: Builder(
           builder: (context) => IconButton(
@@ -151,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
         flexibleSpace: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/images/authbg.jpg"), // Your image path
+              image: AssetImage(ImageConfig.splashBg), // Your image path
               fit: BoxFit.cover,
             ),
           ),
@@ -160,8 +168,8 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/authbg.jpg"), // your asset path
-            opacity: .4,
+            image: AssetImage(ImageConfig.splashBg), // your asset path
+            opacity: .1,
             fit: BoxFit.cover, // make it fill the screen
           ),
         ),
