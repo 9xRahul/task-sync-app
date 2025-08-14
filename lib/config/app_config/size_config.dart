@@ -76,4 +76,12 @@ class SizeConfig {
 
   double authLogoHeight = 200;
   double authLogoWidth = 200;
+
+  //drawer
+  double drawerIconSize = 20;
+  double drawerFontSize = 15;
+
+  //appbar
+  double appBarIconSize = 20;
+  double appBarFontSize = 20;
 }

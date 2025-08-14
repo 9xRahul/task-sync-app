@@ -27,4 +27,7 @@ class ColorConfig {
   static const Color error = Color(0xFFF44336);
   static const Color warning = Color(0xFFFF9800);
   static const Color info = Color(0xFF2196F3);
+
+  //Appbar
+  static const Color appBArIconColor = Color(0xFFFFFFFF);
 }

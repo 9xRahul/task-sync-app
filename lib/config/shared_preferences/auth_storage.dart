@@ -30,13 +30,14 @@ class AuthStorage {
   }
 
   /// Get user info from SharedPreferences
-  static Future<Map<String, String?>> getUserInfo() async {
+  static Future<UserModel> getUserInfo() async {
     final prefs = await SharedPreferences.getInstance();
-    return {
+    return UserModel.fromJson({
       'userId': prefs.getString('userId'),
       'name': prefs.getString('name'),
       'email': prefs.getString('email'),
-    };
+      'isVerified': prefs.getBool('isVerified'),
+    });
   }
 
   /// Check login status

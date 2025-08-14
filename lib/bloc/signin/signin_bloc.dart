@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:tasksync/bloc/app/app_bloc.dart';
 import 'package:tasksync/bloc/signup/signup_bloc.dart';
+import 'package:tasksync/config/shared_preferences/auth_storage.dart';
 import 'package:tasksync/repository/auth_methods.dart';
 
 part 'signin_event.dart';
@@ -8,7 +10,9 @@ part 'signin_state.dart';
 
 class SigninBloc extends Bloc<SigninEvent, SigninState> {
   AuthRepository authRepository;
-  SigninBloc({required this.authRepository})
+  
+
+  SigninBloc({ required this.authRepository})
     : super(
         SigninState(
           loading: false,
@@ -32,13 +36,28 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
         password: event.password,
       );
 
+      print("Login Response: $response");
+
       if (response["status"] == true) {
+        // ✅ Store login data in SharedPreferences
+        await AuthStorage.saveLoginData(
+          loginData: response['user'],
+          token: response['token'],
+        );
+
+        // ✅ Fetch from storage to keep consistency
+        final token = await AuthStorage.getToken();
+        final data = await AuthStorage.getUserInfo();
+
+        // ✅ Update signin state
+
+
         emit(
           state.copyWith(
             loading: false,
             error: false,
             message: response["message"],
-            authToken: response["token"],
+            authToken: token,
           ),
         );
       } else {

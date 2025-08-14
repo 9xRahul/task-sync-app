@@ -42,6 +42,9 @@ class AuthRepository {
 
         apiResponse['token'] = token;
 
+        print("User Model Data: ${userModelData.toJson()}");
+        print("Auth Token: $token");
+
         await AuthStorage.saveLoginData(loginData: userModelData, token: token);
 
         return apiResponse;
