@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tasksync/bloc/app/app_bloc.dart';
+import 'package:tasksync/bloc/bottom_nav/bottom_nav_bar_bloc.dart';
+import 'package:tasksync/bloc/home_screen/home_screen_bloc.dart';
 import 'package:tasksync/bloc/signin/signin_bloc.dart';
 import 'package:tasksync/bloc/signup/signup_bloc.dart' show SignupBloc;
 import 'package:tasksync/config/app_config/size_config.dart';
@@ -35,6 +37,8 @@ class MyApp extends StatelessWidget {
               BlocProvider(
                 create: (_) => SigninBloc(authRepository: AuthRepository()),
               ),
+              BlocProvider(create: (_) => HomeScreenBloc()),
+              BlocProvider(create: (_) => BottomNavBarBloc()),
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,

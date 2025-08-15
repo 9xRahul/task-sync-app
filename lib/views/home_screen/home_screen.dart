@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tasksync/bloc/app/app_bloc.dart';
+import 'package:tasksync/bloc/bottom_nav/bottom_nav_bar_bloc.dart';
+import 'package:tasksync/bloc/home_screen/home_screen_bloc.dart';
 import 'package:tasksync/config/app_config/color_config.dart';
+import 'package:tasksync/config/app_config/constants.dart';
+import 'package:tasksync/config/app_config/enums.dart';
 import 'package:tasksync/config/app_config/image_config.dart';
 import 'package:tasksync/config/app_config/size_config.dart';
 import 'package:tasksync/config/shared_preferences/auth_storage.dart';
 import 'package:tasksync/helpers/app_bacr_icons.dart';
 import 'package:tasksync/helpers/drawer_list_tile.dart';
 import 'package:tasksync/helpers/text_widget.dart';
+import 'package:tasksync/views/home_screen/widgets/category_item_widget.dart';
+import 'package:tasksync/views/home_screen/widgets/select_tasks_by_status_widget.dart';
 import 'package:tasksync/views/login_screen/signin_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -26,6 +32,12 @@ class _HomeScreenState extends State<HomeScreen> {
     getUserInfo();
   }
 
+  final List<Widget> _pages = const [
+    HomeScreenTasks(),
+    HomeScreenCalender(),
+    HomeScreenOverView(),
+  ];
+
   void getUserInfo() async {
     final userInfo = await AuthStorage.getUserInfo();
     final token = await AuthStorage.getToken();
@@ -38,6 +50,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final pageIndex = context.select(
+      (BottomNavBarBloc bloc) => bloc.state.bottomNavIndex,
+    );
+
     return Scaffold(
       drawer: Drawer(
         child: Container(
@@ -117,64 +133,202 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
 
-      appBar: AppBar(
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: Icon(
-              Icons.menu,
-              color: ColorConfig.appBArIconColor,
-              size: SizeConfig().appBarIconSize,
-            ),
-            onPressed: () {
-              Scaffold.of(context).openDrawer(); // ✅ works now
+      body: BlocBuilder<BottomNavBarBloc, BottomNavBarState>(
+        builder: (context, state) {
+          return _pages[state.bottomNavIndex];
+        },
+      ),
+      bottomNavigationBar: BlocBuilder<BottomNavBarBloc, BottomNavBarState>(
+        builder: (context, state) {
+          return BottomNavigationBar(
+            currentIndex: state.bottomNavIndex,
+            selectedItemColor: Colors.pink,
+            unselectedItemColor: Colors.grey,
+            onTap: (index) {
+              context.read<BottomNavBarBloc>().add(
+                BottomnavItemChangeEvent(index: index),
+              );
             },
-          ),
+            items: const [
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+              BottomNavigationBarItem(icon: Icon(Icons.task), label: 'Tasks'),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: 'Profile',
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class HomeScreenTasks extends StatelessWidget {
+  const HomeScreenTasks({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(ImageConfig.splashBg), // your asset path
+          opacity: .1,
+          fit: BoxFit.cover, // make it fill the screen
         ),
-        title: textWidget(
-          text: "TaskSync",
-          color: ColorConfig.appBArIconColor,
-          fontSize: SizeConfig().appBarFontSize,
-          fontWeight: FontWeight.bold,
-        ),
-        actions: [
-          appBarIconButton(
-            icon: Icons.search,
-            iconSize: SizeConfig().appBarIconSize,
-            iconColor: ColorConfig.appBArIconColor,
-            onPressed: () {},
-          ),
-          appBarIconButton(
-            icon: Icons.notifications,
-            iconSize: SizeConfig().appBarIconSize,
-            iconColor: ColorConfig.appBArIconColor,
-            onPressed: () {},
-          ),
-          appBarIconButton(
-            icon: Icons.more_vert,
-            iconSize: SizeConfig().appBarIconSize,
-            iconColor: ColorConfig.appBArIconColor,
-            onPressed: () {},
-          ),
-        ],
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(ImageConfig.splashBg), // Your image path
-              fit: BoxFit.cover,
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            height: kToolbarHeight + MediaQuery.of(context).padding.top,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(ImageConfig.splashBg),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Row(
+              children: [
+                Builder(
+                  builder: (context) => IconButton(
+                    icon: Icon(
+                      Icons.menu,
+                      color: ColorConfig.appBArIconColor,
+                      size: SizeConfig().appBarIconSize,
+                    ),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: textWidget(
+                    text: "TaskSync",
+                    color: ColorConfig.appBArIconColor,
+                    fontSize: SizeConfig().appBarFontSize,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                appBarIconButton(
+                  icon: Icons.search,
+                  iconSize: SizeConfig().appBarIconSize,
+                  iconColor: ColorConfig.appBArIconColor,
+                  onPressed: () {},
+                ),
+                appBarIconButton(
+                  icon: Icons.notifications,
+                  iconSize: SizeConfig().appBarIconSize,
+                  iconColor: ColorConfig.appBArIconColor,
+                  onPressed: () {},
+                ),
+                appBarIconButton(
+                  icon: Icons.more_vert,
+                  iconSize: SizeConfig().appBarIconSize,
+                  iconColor: ColorConfig.appBArIconColor,
+                  onPressed: () {},
+                ),
+              ],
             ),
           ),
+
+          categoryItemWidget(context: context),
+          SelectTasksByStatusWidget(context: context),
+        ],
+      ),
+    );
+  }
+}
+
+class HomeScreenCalender extends StatelessWidget {
+  const HomeScreenCalender({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(ImageConfig.splashBg), // your asset path
+          opacity: .1,
+          fit: BoxFit.cover, // make it fill the screen
         ),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(ImageConfig.splashBg), // your asset path
-            opacity: .1,
-            fit: BoxFit.cover, // make it fill the screen
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            height: kToolbarHeight + MediaQuery.of(context).padding.top,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(ImageConfig.splashBg),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Row(
+              children: [
+                Builder(
+                  builder: (context) => IconButton(
+                    icon: Icon(
+                      Icons.menu,
+                      color: ColorConfig.appBArIconColor,
+                      size: SizeConfig().appBarIconSize,
+                    ),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: textWidget(
+                    text: "TaskSync",
+                    color: ColorConfig.appBArIconColor,
+                    fontSize: SizeConfig().appBarFontSize,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                appBarIconButton(
+                  icon: Icons.search,
+                  iconSize: SizeConfig().appBarIconSize,
+                  iconColor: ColorConfig.appBArIconColor,
+                  onPressed: () {},
+                ),
+                appBarIconButton(
+                  icon: Icons.notifications,
+                  iconSize: SizeConfig().appBarIconSize,
+                  iconColor: ColorConfig.appBArIconColor,
+                  onPressed: () {},
+                ),
+                appBarIconButton(
+                  icon: Icons.more_vert,
+                  iconSize: SizeConfig().appBarIconSize,
+                  iconColor: ColorConfig.appBArIconColor,
+                  onPressed: () {},
+                ),
+              ],
+            ),
           ),
-        ),
-        child: Center(child: Text("Content goes here")),
+
+          Text("Calender Screen"),
+        ],
       ),
+    );
+  }
+}
+
+class HomeScreenOverView extends StatelessWidget {
+  const HomeScreenOverView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(ImageConfig.splashBg), // your asset path
+          opacity: .1,
+          fit: BoxFit.cover, // make it fill the screen
+        ),
+      ),
+      child: Column(children: [Text("Over View Screen")]),
     );
   }
 }

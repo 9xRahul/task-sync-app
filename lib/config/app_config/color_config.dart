@@ -30,4 +30,10 @@ class ColorConfig {
 
   //Appbar
   static const Color appBArIconColor = Color(0xFFFFFFFF);
+
+  //homeScreen
+  static const Color selectedCategoryItemColor = Color(0xFFFFFFFF);
+  static const Color unSelectedCategoryItemColor = Colors.pink;
+
+  
 }
