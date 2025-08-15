@@ -12,9 +12,11 @@ import 'package:tasksync/config/shared_preferences/auth_storage.dart';
 import 'package:tasksync/helpers/app_bacr_icons.dart';
 import 'package:tasksync/helpers/drawer_list_tile.dart';
 import 'package:tasksync/helpers/text_widget.dart';
+import 'package:tasksync/views/calender_screen.dart/calender_screen.dart';
 import 'package:tasksync/views/home_screen/widgets/category_item_widget.dart';
 import 'package:tasksync/views/home_screen/widgets/select_tasks_by_status_widget.dart';
 import 'package:tasksync/views/login_screen/signin_screen.dart';
+import 'package:tasksync/views/overview_screen/overview_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,10 +34,10 @@ class _HomeScreenState extends State<HomeScreen> {
     getUserInfo();
   }
 
-  final List<Widget> _pages = const [
-    HomeScreenTasks(),
-    HomeScreenCalender(),
-    HomeScreenOverView(),
+  final List<Widget> _pages = [
+    const HomeScreenTasks(),
+    CalenderScreen(),
+    const OverViewScreen(),
   ];
 
   void getUserInfo() async {
@@ -50,10 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final pageIndex = context.select(
-      (BottomNavBarBloc bloc) => bloc.state.bottomNavIndex,
-    );
-
     return Scaffold(
       drawer: Drawer(
         child: Container(
@@ -149,12 +147,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 BottomnavItemChangeEvent(index: index),
               );
             },
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-              BottomNavigationBarItem(icon: Icon(Icons.task), label: 'Tasks'),
+            items: [
               BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: 'Profile',
+                icon: Icon(Icons.task_alt_outlined),
+                label: 'Tasks',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_month_outlined),
+                label: 'Calender',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.show_chart_outlined),
+                label: 'Overview',
               ),
             ],
           );
@@ -236,99 +240,6 @@ class HomeScreenTasks extends StatelessWidget {
           SelectTasksByStatusWidget(context: context),
         ],
       ),
-    );
-  }
-}
-
-class HomeScreenCalender extends StatelessWidget {
-  const HomeScreenCalender({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(ImageConfig.splashBg), // your asset path
-          opacity: .1,
-          fit: BoxFit.cover, // make it fill the screen
-        ),
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            height: kToolbarHeight + MediaQuery.of(context).padding.top,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(ImageConfig.splashBg),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Row(
-              children: [
-                Builder(
-                  builder: (context) => IconButton(
-                    icon: Icon(
-                      Icons.menu,
-                      color: ColorConfig.appBArIconColor,
-                      size: SizeConfig().appBarIconSize,
-                    ),
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: textWidget(
-                    text: "TaskSync",
-                    color: ColorConfig.appBArIconColor,
-                    fontSize: SizeConfig().appBarFontSize,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                appBarIconButton(
-                  icon: Icons.search,
-                  iconSize: SizeConfig().appBarIconSize,
-                  iconColor: ColorConfig.appBArIconColor,
-                  onPressed: () {},
-                ),
-                appBarIconButton(
-                  icon: Icons.notifications,
-                  iconSize: SizeConfig().appBarIconSize,
-                  iconColor: ColorConfig.appBArIconColor,
-                  onPressed: () {},
-                ),
-                appBarIconButton(
-                  icon: Icons.more_vert,
-                  iconSize: SizeConfig().appBarIconSize,
-                  iconColor: ColorConfig.appBArIconColor,
-                  onPressed: () {},
-                ),
-              ],
-            ),
-          ),
-
-          Text("Calender Screen"),
-        ],
-      ),
-    );
-  }
-}
-
-class HomeScreenOverView extends StatelessWidget {
-  const HomeScreenOverView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(ImageConfig.splashBg), // your asset path
-          opacity: .1,
-          fit: BoxFit.cover, // make it fill the screen
-        ),
-      ),
-      child: Column(children: [Text("Over View Screen")]),
     );
   }
 }
