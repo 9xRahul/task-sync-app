@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tasksync/bloc/signin/signin_bloc.dart';
 import 'package:tasksync/bloc/signup/signup_bloc.dart';
 import 'package:tasksync/config/shared_preferences/auth_storage.dart';
-import 'package:tasksync/helpers/text_field_fidget.dart';
-import 'package:tasksync/helpers/toast_messenger.dart';
-import 'package:tasksync/views/login_screen/signin_screen.dart';
+import 'package:tasksync/views/helpers/text_field_fidget.dart';
+import 'package:tasksync/views/helpers/toast_messenger.dart';
+import 'package:tasksync/views/screens/login_screen/signin_screen.dart';
 
 void updatePasswordDialouge({
   required BuildContext context,

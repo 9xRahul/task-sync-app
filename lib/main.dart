@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tasksync/bloc/add_task/add_task_bloc.dart';
 import 'package:tasksync/bloc/app/app_bloc.dart';
 import 'package:tasksync/bloc/bottom_nav/bottom_nav_bar_bloc.dart';
 import 'package:tasksync/bloc/home_screen/home_screen_bloc.dart';
@@ -8,11 +9,26 @@ import 'package:tasksync/bloc/signup/signup_bloc.dart' show SignupBloc;
 import 'package:tasksync/config/app_config/size_config.dart';
 import 'package:tasksync/config/shared_preferences/auth_storage.dart';
 import 'package:tasksync/repository/auth_methods.dart';
-import 'package:tasksync/views/home_screen/home_screen.dart';
-import 'package:tasksync/views/splash_screen/splash_screen.dart';
+import 'package:tasksync/views/screens/home_screen/home_screen.dart';
+import 'package:tasksync/views/screens/splash_screen/splash_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => SignupBloc(authRepository: AuthRepository()),
+        ),
+        BlocProvider(
+          create: (_) => SigninBloc(authRepository: AuthRepository()),
+        ),
+        BlocProvider(create: (_) => HomeScreenBloc()),
+        BlocProvider(create: (_) => BottomNavBarBloc()),
+        BlocProvider(create: (_) => AddTaskBloc()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -29,30 +45,18 @@ class MyApp extends StatelessWidget {
             );
           }
 
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) => SignupBloc(authRepository: AuthRepository()),
-              ),
-              BlocProvider(
-                create: (_) => SigninBloc(authRepository: AuthRepository()),
-              ),
-              BlocProvider(create: (_) => HomeScreenBloc()),
-              BlocProvider(create: (_) => BottomNavBarBloc()),
-            ],
-            child: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              home: Builder(
-                builder: (context) {
-                  SizeConfig.initialize(context);
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: Builder(
+              builder: (context) {
+                SizeConfig.initialize(context);
 
-                  if (state.token != null && state.token!.isNotEmpty) {
-                    return HomeScreen();
-                  } else {
-                    return SplashScreen();
-                  }
-                },
-              ),
+                if (state.token != null && state.token!.isNotEmpty) {
+                  return HomeScreen();
+                } else {
+                  return SplashScreen();
+                }
+              },
             ),
           );
         },

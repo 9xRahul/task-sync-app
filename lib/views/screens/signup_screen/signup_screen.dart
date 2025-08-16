@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tasksync/bloc/signup/signup_bloc.dart';
 import 'package:tasksync/config/app_config/color_config.dart';
 import 'package:tasksync/config/app_config/size_config.dart';
-import 'package:tasksync/helpers/text_field_fidget.dart';
-import 'package:tasksync/helpers/toast_messenger.dart';
-import 'package:tasksync/helpers/verification_dialouge.dart';
-import 'package:tasksync/views/login_screen/signin_screen.dart';
+import 'package:tasksync/views/helpers/text_field_fidget.dart';
+import 'package:tasksync/views/helpers/toast_messenger.dart';
+import 'package:tasksync/views/helpers/verification_dialouge.dart';
+import 'package:tasksync/views/screens/login_screen/signin_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});

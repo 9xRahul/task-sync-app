@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tasksync/config/app_config/color_config.dart';
 import 'package:tasksync/config/app_config/size_config.dart';
 import 'package:tasksync/config/shared_preferences/auth_storage.dart';
-import 'package:tasksync/views/home_screen/home_screen.dart';
-import 'package:tasksync/views/login_screen/signin_screen.dart';
+import 'package:tasksync/views/screens/home_screen/home_screen.dart';
+import 'package:tasksync/views/screens/login_screen/signin_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override

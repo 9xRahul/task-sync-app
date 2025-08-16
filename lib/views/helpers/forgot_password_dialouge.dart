@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tasksync/bloc/signin/signin_bloc.dart';
-import 'package:tasksync/helpers/text_field_fidget.dart';
-import 'package:tasksync/helpers/toast_messenger.dart';
-import 'package:tasksync/helpers/update_password_dialouge.dart';
+import 'package:tasksync/views/helpers/text_field_fidget.dart';
+import 'package:tasksync/views/helpers/toast_messenger.dart';
+import 'package:tasksync/views/helpers/update_password_dialouge.dart';
 
 void resetPasswordDialouge({
   required BuildContext context,

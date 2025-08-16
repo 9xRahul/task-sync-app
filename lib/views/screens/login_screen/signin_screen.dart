@@ -4,12 +4,12 @@ import 'package:tasksync/bloc/signin/signin_bloc.dart';
 import 'package:tasksync/bloc/signup/signup_bloc.dart';
 import 'package:tasksync/config/app_config/color_config.dart';
 import 'package:tasksync/config/app_config/size_config.dart';
-import 'package:tasksync/helpers/forgot_password_dialouge.dart';
-import 'package:tasksync/helpers/text_field_fidget.dart';
-import 'package:tasksync/helpers/toast_messenger.dart';
-import 'package:tasksync/helpers/verification_dialouge.dart';
-import 'package:tasksync/views/home_screen/home_screen.dart';
-import 'package:tasksync/views/signup_screen/signup_screen.dart';
+import 'package:tasksync/views/helpers/forgot_password_dialouge.dart';
+import 'package:tasksync/views/helpers/text_field_fidget.dart';
+import 'package:tasksync/views/helpers/toast_messenger.dart';
+import 'package:tasksync/views/helpers/verification_dialouge.dart';
+import 'package:tasksync/views/screens/home_screen/home_screen.dart';
+import 'package:tasksync/views/screens/signup_screen/signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
