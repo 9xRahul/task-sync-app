@@ -53,7 +53,7 @@ class TaskInputRow extends StatelessWidget {
                             ),
                           )
                           .toList(),
-                      value: state.category.isEmpty ? null : state.category,
+                      value: state.category.isEmpty ? "All" : state.category,
                       // controlled by Bloc
                       onChanged: (String? value) {
                         if (value != null) {
@@ -136,13 +136,13 @@ class TaskInputRow extends StatelessWidget {
                           SelectDateEvent(date: pickedDate),
                         );
                       }
-                      if (state.error!) {
-                        ToastHelper.show(
-                          "Invalid Date",
-                          bgColor: Colors.red,
-                          textColor: Colors.white,
-                        );
-                      }
+                      // if (state.error!) {
+                      //   ToastHelper.show(
+                      //     "Invalid Date",
+                      //     bgColor: Colors.red,
+                      //     textColor: Colors.white,
+                      //   );
+                      // }
                     },
                   );
                 },
@@ -180,14 +180,6 @@ class TaskInputRow extends StatelessWidget {
                         context.read<AddTaskBloc>().add(
                           SelectTimeEvent(time: pickedTime),
                         );
-
-                        if (state.error!) {
-                          ToastHelper.show(
-                            "Invalid time",
-                            bgColor: Colors.red,
-                            textColor: Colors.white,
-                          );
-                        }
                       }
                     },
                   );

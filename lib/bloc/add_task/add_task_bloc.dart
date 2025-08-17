@@ -34,9 +34,7 @@ class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
     GEtTaskDataToStoreEvent event,
     Emitter<AddTaskState> emit,
   ) async {
-    print("reached bloc");
-
-    emit(state.copyWith(error: false, loading: true));
+    emit(state.copyWith(error: false, loading: true, message: ""));
 
     try {
       Map<String, dynamic> taskDataResponse = await TaskRepository().addTask(
@@ -83,7 +81,6 @@ class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
     );
 
     if (dateToCheck.isBefore(today)) {
-      print("Invalid date");
       emit(
         state.copyWith(
           error: true,
@@ -124,7 +121,8 @@ class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
   }
 
   void _selectCategory(SelectCategoryEvent event, Emitter<AddTaskState> emit) {
-    emit(state.copyWith(category: event.category));
+    print(state.error);
+    emit(state.copyWith(category: event.category, error: false, message: ""));
   }
 
   void _reasetValues(ResetAllEvent event, Emitter<AddTaskState> emit) {

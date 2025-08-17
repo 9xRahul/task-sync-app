@@ -24,8 +24,8 @@ class TaskRepository {
       final formattedDate =
           "${dueDate.year.toString().padLeft(4, '0')}-${dueDate.month.toString().padLeft(2, '0')}-${dueDate.day.toString().padLeft(2, '0')}";
 
-      final formattedTime =
-          '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+      final formattedTime = formatTimeOfDay(time);
+      ;
       final body = {
         "title": title,
         "description": description,
@@ -57,6 +57,7 @@ class TaskRepository {
         responseMap['data'] = data['data'];
       } else {
         Map<String, dynamic> data = jsonDecode(response.body);
+        print(data);
         responseMap['status'] = false;
         responseMap['message'] = data['error'];
       }
@@ -66,5 +67,15 @@ class TaskRepository {
       responseMap['message'] = e.toString();
       return responseMap;
     }
+  }
+
+  String formatTimeOfDay(TimeOfDay time) {
+    final hour = time.hourOfPeriod == 0
+        ? 12
+        : time.hourOfPeriod; // 12-hour format
+    final minute = time.minute.toString().padLeft(2, '0');
+    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
+
+    return '$hour:$minute $period';
   }
 }

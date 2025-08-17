@@ -22,14 +22,15 @@ class AddTaskState extends Equatable {
   });
 
   @override
-  List<Object?> get props => [category,
-  date,
-  time,
-  description,
-  title,
-  error,
-  message,
-  loading, 
+  List<Object?> get props => [
+    category,
+    date,
+    time,
+    description,
+    title,
+    error,
+    message,
+    loading, // add this
   ];
 
   factory AddTaskState.initial() {

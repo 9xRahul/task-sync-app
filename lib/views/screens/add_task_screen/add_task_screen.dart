@@ -21,6 +21,14 @@ class AddTaskScreen extends StatefulWidget {
 class _AddTaskScreenState extends State<AddTaskScreen> {
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _titleController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<AddTaskBloc>().add(ResetAllEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -193,7 +201,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         ? CircularProgressIndicator(
                             color: ColorConfig.appBArIconColor,
                           )
-                        : Icon(Icons.check, color: Colors.white),
+                        : Icon(Icons.check, color: ColorConfig.appBArIconColor),
                   ),
                 ),
               );
