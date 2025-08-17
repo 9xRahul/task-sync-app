@@ -41,3 +41,21 @@ class ResetAllEvent extends AddTaskEvent {
   @override
   List<Object> get props => [];
 }
+
+class GEtTaskDataToStoreEvent extends AddTaskEvent {
+  final String taskName;
+  final String taskDescription;
+
+  const GEtTaskDataToStoreEvent({
+    required this.taskName,
+    required this.taskDescription,
+  });
+  @override
+  List<Object> get props => [taskName, taskDescription];
+}
+
+class CatchErrorEvent extends AddTaskEvent {
+  const CatchErrorEvent();
+  @override
+  List<Object> get props => [];
+}

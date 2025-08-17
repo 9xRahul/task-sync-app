@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:tasksync/config/app_config/api_urls.dart';
 import 'package:tasksync/config/shared_preferences/auth_storage.dart';
 import 'package:tasksync/models/user_model.dart';
 
 class AuthRepository {
-  static const String baseUrl = "https://tasksync-lt7f.onrender.com/api/auth";
   Future<Map<String, dynamic>> login({
     required String email,
     required String password,
@@ -20,7 +20,7 @@ class AuthRepository {
 
     try {
       final response = await http.post(
-        Uri.parse("$baseUrl/login"),
+        Uri.parse(ApiUrls.baseUrl + ApiUrls.auth + ApiUrls.login),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email, "password": password}),
       );
@@ -70,7 +70,7 @@ class AuthRepository {
     final apiResponse = {"status": false, "message": "", "errors": []};
 
     final response = await http.post(
-      Uri.parse("$baseUrl/register"),
+      Uri.parse(ApiUrls.baseUrl + ApiUrls.auth + ApiUrls.register),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({"email": email, "password": password, "name": name}),
     );
@@ -116,7 +116,7 @@ class AuthRepository {
   }) async {
     var apiResponse = {"status": false, "message": ""};
     final response = await http.post(
-      Uri.parse("$baseUrl/verify-email"),
+      Uri.parse(ApiUrls.baseUrl + ApiUrls.auth + ApiUrls.verifyEmail),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({"code": verificationCode}),
     );
@@ -140,7 +140,7 @@ class AuthRepository {
 
     try {
       final response = await http.post(
-        Uri.parse("$baseUrl/forgot-password"),
+        Uri.parse(ApiUrls.baseUrl + ApiUrls.auth + ApiUrls.forgotPassword),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email}),
       );
@@ -171,7 +171,7 @@ class AuthRepository {
 
     try {
       final response = await http.post(
-        Uri.parse("$baseUrl/reset-password"),
+        Uri.parse(ApiUrls.baseUrl + ApiUrls.auth + ApiUrls.resetPassword),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $resetToken", // ✅ Bearer token in header

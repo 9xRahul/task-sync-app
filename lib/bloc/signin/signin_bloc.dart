@@ -10,9 +10,8 @@ part 'signin_state.dart';
 
 class SigninBloc extends Bloc<SigninEvent, SigninState> {
   AuthRepository authRepository;
-  
 
-  SigninBloc({ required this.authRepository})
+  SigninBloc({required this.authRepository})
     : super(
         SigninState(
           loading: false,
@@ -50,7 +49,6 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
         final data = await AuthStorage.getUserInfo();
 
         // ✅ Update signin state
-
 
         emit(
           state.copyWith(
