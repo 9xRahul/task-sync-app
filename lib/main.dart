@@ -46,6 +46,7 @@ class MyApp extends StatelessWidget {
           if (state.isLoading) {
             return MaterialApp(
               debugShowCheckedModeBanner: false,
+              
               home: SplashScreen(),
             );
           }

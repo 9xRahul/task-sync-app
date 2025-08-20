@@ -1,6 +1,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:tasksync/bloc/add_task/add_task_bloc.dart';
 import 'package:tasksync/config/app_config/color_config.dart';
 import 'package:tasksync/config/app_config/constants.dart';
@@ -37,6 +38,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         return true;
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
           child: Container(
             height: SizeConfig.screenHeight,
@@ -127,10 +129,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           },
           listener: (context, state) {
             // Show toast when a new task is added successfully
+
             if (!state.loading &&
                 state.error == false &&
                 state.message!.isNotEmpty) {
-              Navigator.of(context).pop();
+              Navigator.pop(context, true);
 
               ToastHelper.show(
                 state.message!,
@@ -154,7 +157,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 onPressed: () {
                   if (_descriptionController.text.isEmpty ||
                       _titleController.text.isEmpty ||
-                      state.date == null) {
+                      state.date == null ||
+                      state.time == null) {
                     if (_descriptionController.text.isEmpty) {
                       ToastHelper.show(
                         bgColor: Colors.red,
@@ -173,6 +177,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         textColor: Colors.white,
                         "Please select a date",
                       );
+                    } else if (state.time == null) {
+                      ToastHelper.show(
+                        "Please select a time",
+                        bgColor: Colors.red,
+                        textColor: Colors.white,
+                      );
                     }
                   } else {
                     context.read<AddTaskBloc>().add(
@@ -186,24 +196,32 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 backgroundColor:
                     Colors.transparent, // keep transparent so image is visible
                 elevation: 0, // normal FAB elevation
-                child: Ink(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: AssetImage(ImageConfig.splashBg),
-                      fit: BoxFit.cover, // looks better than fill
-                    ),
-                  ),
-                  child: SizedBox(
-                    width: 56, // standard FAB size
-                    height: 56,
-                    child: state.loading == true
-                        ? CircularProgressIndicator(
+                child: state.loading == true
+                    ? Lottie.asset(
+                        'assets/animations/loader.json',
+                        width: 90,
+                        height: 90,
+                        fit: BoxFit.cover,
+                        repeat: true, // repeat animation
+                      )
+                    : Ink(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xFFE0218A),
+                          // image: DecorationImage(
+                          //   image: AssetImage(ImageConfig.splashBg),
+                          //   fit: BoxFit.cover, // looks better than fill
+                          // ),
+                        ),
+                        child: SizedBox(
+                          width: 50, // standard FAB size
+                          height: 50,
+                          child: Icon(
+                            Icons.check,
                             color: ColorConfig.appBArIconColor,
-                          )
-                        : Icon(Icons.check, color: ColorConfig.appBArIconColor),
-                  ),
-                ),
+                          ),
+                        ),
+                      ),
               );
             },
           ),

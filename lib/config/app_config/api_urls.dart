@@ -11,4 +11,7 @@ class ApiUrls {
   static const String resetPassword = "reset-password";
 
   static const String createTask = "addtask";
+  static const String getTasks = "get-all-taks";
+  static const String updateTask = "update/";
+  static const String deleteTask = "delete/";
 }

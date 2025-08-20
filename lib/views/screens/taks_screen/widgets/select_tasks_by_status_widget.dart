@@ -47,6 +47,10 @@ Padding taskStatusWidget({
         context.read<HomeScreenBloc>().add(
           SelectTasksWithItsStatusEvent(taskStatus: taskStatus),
         );
+
+        context.read<HomeScreenBloc>().add(
+          GetAllTasks(),
+        );
       },
       child: BlocBuilder<HomeScreenBloc, HomeScreenState>(
         builder: (context, state) {

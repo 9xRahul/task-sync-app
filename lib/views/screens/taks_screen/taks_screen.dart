@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tasksync/bloc/app/app_bloc.dart';
+import 'package:tasksync/bloc/home_screen/home_screen_bloc.dart';
 import 'package:tasksync/config/app_config/color_config.dart';
 import 'package:tasksync/config/app_config/image_config.dart';
 import 'package:tasksync/config/app_config/size_config.dart';
 import 'package:tasksync/config/shared_preferences/auth_storage.dart';
 import 'package:tasksync/views/helpers/app_bacr_icons.dart';
 import 'package:tasksync/views/helpers/drawer_list_tile.dart';
+import 'package:tasksync/views/helpers/empty_container.dart';
 import 'package:tasksync/views/helpers/text_widget.dart';
 import 'package:tasksync/views/screens/add_task_screen/add_task_screen.dart';
 import 'package:tasksync/views/screens/login_screen/signin_screen.dart';
 import 'package:tasksync/views/screens/taks_screen/widgets/category_item_widget.dart';
 import 'package:tasksync/views/screens/taks_screen/widgets/select_tasks_by_status_widget.dart';
+import 'package:tasksync/views/screens/taks_screen/widgets/task_list_widget.dart';
 
 class HomeScreenTasks extends StatefulWidget {
   const HomeScreenTasks({super.key});
@@ -29,6 +33,9 @@ class _HomeScreenTasksState extends State<HomeScreenTasks> {
     // TODO: implement initState
     super.initState();
     getUserInfo();
+    context.read<HomeScreenBloc>().add(
+      GetAllTasks(),
+    );
   }
 
   Future<void> getUserInfo() async {
@@ -42,8 +49,6 @@ class _HomeScreenTasksState extends State<HomeScreenTasks> {
     setState(() {
       user = userInfo.name ?? "Guest";
     });
-
-    // Emit updated app state to Bloc safely
   }
 
   @override
@@ -79,9 +84,9 @@ class _HomeScreenTasksState extends State<HomeScreenTasks> {
                       width: 100,
                     ),
                     textWidget(
-                      text: "Welcome $user",
+                      text: "Welcome\n$user",
                       color: ColorConfig.textLight,
-                      fontSize: 20,
+                      fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
                   ],
@@ -191,9 +196,12 @@ class _HomeScreenTasksState extends State<HomeScreenTasks> {
 
             categoryItemWidget(context: context),
             SelectTasksByStatusWidget(context: context),
+
+            TasksItems(),
           ],
         ),
       ),
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.transparent, // Make FAB background transparent
         elevation: 0, // Remove shadow
@@ -201,8 +209,12 @@ class _HomeScreenTasksState extends State<HomeScreenTasks> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AddTaskScreen()),
-          );
+            MaterialPageRoute(builder: (_) => const AddTaskScreen()),
+          ).then((_) {
+            context.read<HomeScreenBloc>().add(
+              GetAllTasks(),
+            );
+          });
         },
 
         child: Lottie.asset(

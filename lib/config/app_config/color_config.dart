@@ -34,6 +34,7 @@ class ColorConfig {
   //homeScreen
   static const Color selectedCategoryItemColor = Color(0xFFFFFFFF);
   static const Color unSelectedCategoryItemColor = Colors.pink;
+  static const Color backTextColor = Color(0xFF000000);
 
-  
+  static var unSelectedCategoryItem;
 }

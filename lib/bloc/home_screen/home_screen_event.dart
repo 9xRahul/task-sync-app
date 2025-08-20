@@ -32,3 +32,34 @@ class ChangeBottomNavItemEvent extends HomeScreenEvent {
   @override
   List<Object> get props => [bottomNavItem];
 }
+
+class GetTaskByStatus extends HomeScreenEvent {}
+
+class GetAllTasks extends HomeScreenEvent {}
+
+class UpdateStatusEvent extends HomeScreenEvent {
+  final String taskStatus;
+  final String taskId;
+
+  UpdateStatusEvent({required this.taskStatus, required this.taskId});
+
+  @override
+  List<Object> get props => [taskStatus, taskId];
+}
+
+class RemoveFromTaskList extends HomeScreenEvent {
+  final String taskId;
+
+  RemoveFromTaskList({required this.taskId});
+
+  @override
+  List<Object> get props => [taskId];
+}
+
+class DeleteTaskEvent extends HomeScreenEvent {
+  final String taskId;
+
+  DeleteTaskEvent({required this.taskId});
+  @override
+  List<Object> get props => [taskId];
+}

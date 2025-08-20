@@ -19,6 +19,12 @@ SizedBox categoryItemWidget({required BuildContext context}) {
               context.read<HomeScreenBloc>().add(
                 CategoryChangeEvent(categoryItemIndex: index),
               );
+
+              context.read<HomeScreenBloc>().add(
+                GetAllTasks(
+                
+                ),
+              );
             },
             child: BlocBuilder<HomeScreenBloc, HomeScreenState>(
               builder: (context, state) {
