@@ -63,3 +63,19 @@ class DeleteTaskEvent extends HomeScreenEvent {
   @override
   List<Object> get props => [taskId];
 }
+
+class SearchEvent extends HomeScreenEvent {
+  final String query;
+
+  SearchEvent({required this.query});
+  @override
+  List<Object> get props => [query];
+}
+
+class SetSearchStstusEvent extends HomeScreenEvent {
+  final bool isSearch;
+
+  SetSearchStstusEvent({required this.isSearch});
+  @override
+  List<Object> get props => [isSearch];
+}

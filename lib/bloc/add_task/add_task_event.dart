@@ -9,11 +9,12 @@ sealed class AddTaskEvent extends Equatable {
 
 class SelectCategoryEvent extends AddTaskEvent {
   final String category;
+  final int categoryIndex;
 
-  SelectCategoryEvent({required this.category});
+  SelectCategoryEvent({required this.category, required this.categoryIndex});
 
   @override
-  List<Object> get props => [category];
+  List<Object> get props => [category, categoryIndex];
 }
 
 class SelectDateEvent extends AddTaskEvent {
@@ -58,4 +59,32 @@ class CatchErrorEvent extends AddTaskEvent {
   const CatchErrorEvent();
   @override
   List<Object> get props => [];
+}
+
+class GetTaskDetailsById extends AddTaskEvent {
+  final String taskId;
+
+  GetTaskDetailsById({required this.taskId});
+  @override
+  List<Object> get props => [taskId];
+}
+
+class GetTaskDetailsToEdit extends AddTaskEvent {
+  final TaskModel task;
+
+  GetTaskDetailsToEdit({required this.task});
+  @override
+  List<Object> get props => [task];
+}
+
+class UpdateTaskDetails extends AddTaskEvent {
+  final String taskName;
+  final String taskDescription;
+
+  const UpdateTaskDetails({
+    required this.taskName,
+    required this.taskDescription,
+  });
+  @override
+  List<Object> get props => [taskName, taskDescription];
 }

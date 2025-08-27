@@ -13,6 +13,7 @@ class TaskRepository {
     required DateTime dueDate, // keep as DateTime
     required TimeOfDay time,
     required String category,
+    required int categoryIndex,
   }) async {
     final responseMap = {"status": false, "message": "", "data": {}};
 
@@ -34,6 +35,7 @@ class TaskRepository {
         "time": formattedTime,
         "status": "pending",
         "category": category,
+        "categoryIndex": categoryIndex,
       };
 
       // Print the body for debugging
@@ -138,17 +140,34 @@ class TaskRepository {
   }
 
   Future<Map<String, dynamic>> updateTaskStatus({
+    bool isUpdateTask = false,
     required String sId,
-    required String status,
+    String? status,
+    String title = "",
+    String description = "",
+    DateTime? dueDate,
+    TimeOfDay? time,
+    String category = "",
+    int categoryIndex = 0,
   }) async {
     var apiResponse = {"status": false, "message": "", "data": []};
 
     final token = await AuthStorage.getToken();
 
     try {
-      final body = jsonEncode({"status": status});
+      final body = isUpdateTask == true
+          ? jsonEncode({
+              "title": title,
+              "description": description,
+              "dueDate": dueDate?.toIso8601String(),
+              "time": time != null ? "${time.hour}:${time.minute}" : null,
+              "category": category,
+              "categoryIndex": categoryIndex,
+            })
+          : jsonEncode({"status": status});
       final url = ApiUrls.baseUrl + ApiUrls.task + ApiUrls.updateTask + sId;
 
+      print(body);
       final response = await http.put(
         Uri.parse(url),
 
@@ -159,11 +178,21 @@ class TaskRepository {
         },
       );
 
-      print(response.body);
-
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = jsonDecode(response.body);
-        var res = responseData['data'] as List; // cast to List
+
+        var data = responseData['data'];
+
+        if (data is List) {
+          // handle list of tasks
+          for (var task in data) {
+            print(task); // each task is a Map
+          }
+        } else if (data is Map<String, dynamic>) {
+          // handle single task
+          print(data);
+        }
+
         apiResponse['status'] = true;
         apiResponse['message'] = "Tasks Updated successfully";
       } else {
@@ -172,6 +201,7 @@ class TaskRepository {
         apiResponse['data'] = <TaskModel>[]; // empty list if failed
       }
     } catch (e) {
+      print(e);
       apiResponse['status'] = false;
       apiResponse['message'] = e.toString();
     }
@@ -211,6 +241,59 @@ class TaskRepository {
     } catch (e) {
       apiResponse['status'] = false;
       apiResponse['message'] = e.toString();
+    }
+
+    return apiResponse;
+  }
+
+  Future<Map<String, dynamic>> searchTasks({required String query,required String status}) async {
+    final apiResponse = {"status": false, "message": "", "data": []};
+
+    final token = await AuthStorage.getToken();
+    if (token == null || token.isEmpty) {
+      apiResponse['message'] = "Not authenticated";
+      return apiResponse;
+    }
+
+    try {
+      final url =
+          ApiUrls.baseUrl +
+          ApiUrls.task +
+          ApiUrls.search; // e.g. /api/tasks/search
+      final uri = Uri.parse(url).replace(queryParameters: {"q": query,"status":status});
+
+      final response = await http.get(
+        uri,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        apiResponse['status'] =
+            responseData['success'] == true ||
+            responseData['status'] == true ||
+            true;
+        apiResponse['message'] =
+            responseData['message'] ?? "Tasks fetched successfully";
+        apiResponse['data'] =
+            (responseData['data'] as List<dynamic>?)
+                ?.map((e) => TaskModel.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [];
+      } else {
+        final Map<String, dynamic> err = jsonDecode(response.body);
+        apiResponse['status'] = false;
+        apiResponse['message'] =
+            err['message'] ?? err['error'] ?? "Failed to fetch tasks";
+        apiResponse['data'] = [];
+      }
+    } catch (e) {
+      apiResponse['status'] = false;
+      apiResponse['message'] = e.toString();
+      apiResponse['data'] = [];
     }
 
     return apiResponse;

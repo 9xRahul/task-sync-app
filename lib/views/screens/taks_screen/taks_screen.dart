@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tasksync/bloc/app/app_bloc.dart';
@@ -33,9 +34,7 @@ class _HomeScreenTasksState extends State<HomeScreenTasks> {
     // TODO: implement initState
     super.initState();
     getUserInfo();
-    context.read<HomeScreenBloc>().add(
-      GetAllTasks(),
-    );
+    context.read<HomeScreenBloc>().add(GetAllTasks());
   }
 
   Future<void> getUserInfo() async {
@@ -54,6 +53,7 @@ class _HomeScreenTasksState extends State<HomeScreenTasks> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       drawer: Drawer(
         child: Container(
           decoration: BoxDecoration(
@@ -164,19 +164,92 @@ class _HomeScreenTasksState extends State<HomeScreenTasks> {
                       },
                     ),
                   ),
-                  Expanded(
-                    child: textWidget(
-                      text: "TaskSync",
-                      color: ColorConfig.appBArIconColor,
-                      fontSize: SizeConfig().appBarFontSize,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  BlocBuilder<HomeScreenBloc, HomeScreenState>(
+                    builder: (context, state) {
+                      return Expanded(
+                        child: state.isSearching
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 0,
+                                ),
+                                child: TextField(
+                                  onChanged: (value) {
+                                    // 👇 send search query to your Bloc
+                                    context.read<HomeScreenBloc>().add(
+                                      SearchEvent(query: value),
+                                    );
+                                  },
+
+                                  decoration: InputDecoration(
+                                    hintText: "Search tasks...",
+                                    hintStyle: TextStyle(
+                                      color: ColorConfig
+                                          .appBArIconColor, // your hint color
+                                      fontSize: SizeConfig().appBarFontSize,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    filled: true,
+                                    isDense: true,
+                                    fillColor: Colors
+                                        .white, // ✅ background inside text box
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                      borderSide:
+                                          BorderSide.none, // ✅ no border line
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                      borderSide:
+                                          BorderSide.none, // ✅ no border line
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                      borderSide:
+                                          BorderSide.none, // ✅ no border line
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 10,
+                                    ),
+                                  ),
+                                  style: GoogleFonts.aBeeZee().copyWith(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ), // ✅ typed text in black
+                                ),
+                              )
+                            : textWidget(
+                                text: "TaskSync",
+                                color: ColorConfig.appBArIconColor,
+                                fontSize: SizeConfig().appBarFontSize,
+                                fontWeight: FontWeight.bold,
+                              ),
+                      );
+                    },
                   ),
-                  appBarIconButton(
-                    icon: Icons.search,
-                    iconSize: SizeConfig().appBarIconSize,
-                    iconColor: ColorConfig.appBArIconColor,
-                    onPressed: () {},
+
+                  BlocBuilder<HomeScreenBloc, HomeScreenState>(
+                    builder: (context, state) {
+                      return appBarIconButton(
+                        icon: state.isSearching ? Icons.close : Icons.search,
+                        iconSize: SizeConfig().appBarIconSize,
+                        iconColor: ColorConfig.appBArIconColor,
+                        onPressed: () {
+                          final current = context
+                              .read<HomeScreenBloc>()
+                              .state
+                              .isSearching;
+                          print(current);
+                          context.read<HomeScreenBloc>().add(
+                            SetSearchStstusEvent(
+                              isSearch: !current,
+                            ), // <-- aligned name
+                          );
+                        },
+                      );
+                    },
                   ),
                   appBarIconButton(
                     icon: Icons.notifications,
@@ -209,11 +282,9 @@ class _HomeScreenTasksState extends State<HomeScreenTasks> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const AddTaskScreen()),
+            MaterialPageRoute(builder: (_) => AddTaskScreen()),
           ).then((_) {
-            context.read<HomeScreenBloc>().add(
-              GetAllTasks(),
-            );
+            context.read<HomeScreenBloc>().add(GetAllTasks());
           });
         },
 

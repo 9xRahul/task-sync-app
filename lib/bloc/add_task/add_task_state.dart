@@ -9,6 +9,8 @@ class AddTaskState extends Equatable {
   final bool? error;
   final String? message;
   final bool loading;
+  final int selectedcategoryIndex;
+  final String taskId;
 
   const AddTaskState({
     required this.category,
@@ -19,6 +21,8 @@ class AddTaskState extends Equatable {
     this.error = false,
     this.message = "",
     this.loading = false,
+    this.selectedcategoryIndex = 0,
+    this.taskId = "0",
   });
 
   @override
@@ -31,6 +35,8 @@ class AddTaskState extends Equatable {
     error,
     message,
     loading, // add this
+    selectedcategoryIndex,
+    taskId,
   ];
 
   factory AddTaskState.initial() {
@@ -43,6 +49,8 @@ class AddTaskState extends Equatable {
       error: false,
       message: "",
       loading: false,
+      selectedcategoryIndex: 0,
+      taskId: "",
     );
   }
 
@@ -55,6 +63,8 @@ class AddTaskState extends Equatable {
     bool? error,
     String? message,
     bool? loading,
+    int? selectedcategoryIndex,
+    String? taskId,
   }) {
     return AddTaskState(
       category: category ?? this.category,
@@ -65,6 +75,9 @@ class AddTaskState extends Equatable {
       error: error ?? this.error,
       message: message ?? this.message,
       loading: loading ?? this.loading,
+      selectedcategoryIndex:
+          selectedcategoryIndex ?? this.selectedcategoryIndex,
+      taskId: taskId ?? this.taskId,
     );
   }
 }

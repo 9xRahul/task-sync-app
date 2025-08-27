@@ -7,6 +7,7 @@ class TaskModel {
   String? description;
   String? status;
   String? dueDate;
+  int? categoryIndex;
 
   TaskModel({
     this.sId,
@@ -17,6 +18,7 @@ class TaskModel {
     this.description,
     this.status,
     this.dueDate,
+    this.categoryIndex,
   });
 
   TaskModel.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,7 @@ class TaskModel {
     description = json['description'];
     status = json['status'];
     dueDate = json['dueDate'];
+    categoryIndex = json['categoryIndex'];
   }
 
   Map<String, dynamic> toJson() {
@@ -40,6 +43,7 @@ class TaskModel {
     data['description'] = this.description;
     data['status'] = this.status;
     data['dueDate'] = this.dueDate;
+    data['categoryIndex'] = this.categoryIndex;
     return data;
   }
 }

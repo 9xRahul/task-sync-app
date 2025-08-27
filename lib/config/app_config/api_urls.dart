@@ -14,4 +14,5 @@ class ApiUrls {
   static const String getTasks = "get-all-taks";
   static const String updateTask = "update/";
   static const String deleteTask = "delete/";
+  static const String search = "search/";
 }

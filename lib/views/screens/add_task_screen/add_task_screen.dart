@@ -7,13 +7,17 @@ import 'package:tasksync/config/app_config/color_config.dart';
 import 'package:tasksync/config/app_config/constants.dart';
 import 'package:tasksync/config/app_config/image_config.dart';
 import 'package:tasksync/config/app_config/size_config.dart';
+import 'package:tasksync/models/task_model.dart';
 import 'package:tasksync/views/helpers/text_widget.dart';
 import 'package:tasksync/views/helpers/toast_messenger.dart';
 import 'package:tasksync/views/screens/add_task_screen/widgets/category_date_time_picker_widget.dart';
 import 'package:tasksync/views/screens/add_task_screen/widgets/text_field_for_task_description.dart';
 
 class AddTaskScreen extends StatefulWidget {
-  const AddTaskScreen({super.key});
+  final bool isUpdate;
+  final TaskModel? task;
+
+  AddTaskScreen({super.key, this.isUpdate = false, this.task});
 
   @override
   State<AddTaskScreen> createState() => _AddTaskScreenState();
@@ -27,7 +31,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    context.read<AddTaskBloc>().add(ResetAllEvent());
+    if (widget.isUpdate == true) {
+    } else {
+      context.read<AddTaskBloc>().add(ResetAllEvent());
+    }
   }
 
   @override
@@ -87,30 +94,42 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
 
                 // Row with dropdown + calendar + clock
-                TaskInputRow(),
+                TaskInputRow(isUpdate: widget.isUpdate),
 
                 const SizedBox(height: 16),
 
-                CustomTextField(
-                  controller: _titleController,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  hintText: "Title",
-                  maxLines: 1,
-                  maxLength: 10,
-                  onChanged: (value) {
-                    print(value);
+                BlocBuilder<AddTaskBloc, AddTaskState>(
+                  builder: (context, state) {
+                    return CustomTextField(
+                      controller: _titleController,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      hintText: "Title",
+                      maxLines: 1,
+                      isUpdate: widget.isUpdate,
+                      maxLength: 10,
+                      textToEdit: state.title!,
+                      onChanged: (value) {
+                        print(value);
+                      },
+                    );
                   },
                 ),
-                CustomTextField(
-                  controller: _descriptionController,
-                  maxLines: 10,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  hintText: "Description",
-                  maxLength: 1000,
-                  onChanged: (value) {
-                    print(value);
+                BlocBuilder<AddTaskBloc, AddTaskState>(
+                  builder: (context, state) {
+                    return CustomTextField(
+                      isUpdate: widget.isUpdate,
+                      controller: _descriptionController,
+                      maxLines: 10,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      textToEdit: state.description!,
+                      hintText: "Description",
+                      maxLength: 1000,
+                      onChanged: (value) {
+                        print(value);
+                      },
+                    );
                   },
                 ),
 
@@ -185,12 +204,22 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       );
                     }
                   } else {
-                    context.read<AddTaskBloc>().add(
-                      GEtTaskDataToStoreEvent(
-                        taskName: _titleController.text,
-                        taskDescription: _descriptionController.text,
-                      ),
-                    );
+                    if (widget.isUpdate) {
+                      print(_descriptionController.text);
+                      context.read<AddTaskBloc>().add(
+                        UpdateTaskDetails(
+                          taskDescription: _descriptionController.text,
+                          taskName: _titleController.text,
+                        ),
+                      );
+                    } else {
+                      context.read<AddTaskBloc>().add(
+                        GEtTaskDataToStoreEvent(
+                          taskName: _titleController.text,
+                          taskDescription: _descriptionController.text,
+                        ),
+                      );
+                    }
                   }
                 },
                 backgroundColor:

@@ -19,6 +19,52 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
     on<UpdateStatusEvent>(_updateStatus);
     on<RemoveFromTaskList>(_removeFromTaskList);
     on<DeleteTaskEvent>(_deleleteTask);
+    on<SearchEvent>(_searchTask);
+    on<SetSearchStstusEvent>(_setSearchStatus);
+  }
+
+  void _setSearchStatus(
+    SetSearchStstusEvent event,
+    Emitter<HomeScreenState> emit,
+  ) {
+    emit(state.copyWith(isSearching: event.isSearch));
+  }
+
+  void _searchTask(SearchEvent event, Emitter<HomeScreenState> emit) async {
+    print(event.query);
+    try {
+      emit(state.copyWith(error: false, loading: false));
+
+      var response = {};
+
+      if (event.query.isEmpty) {
+        response = await TaskRepository().getTasks(
+          category: state.selectedCategoryIndex == 0
+              ? AppConstants.categoryList[0]
+              : AppConstants.categoryList[state.selectedCategoryIndex],
+          status: state.taskStatus.name.toString(),
+        );
+      } else {
+        response = await TaskRepository().searchTasks(
+          query: event.query,
+          status: state.taskStatus.name,
+        );
+      }
+
+      List<TaskModel> taskData = response['data'] as List<TaskModel>;
+
+      print(taskData);
+      emit(
+        state.copyWith(
+          error: false,
+          loading: false,
+          tasks: taskData,
+          searchList: taskData,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(error: true, loading: false, message: e.toString()));
+    }
   }
 
   void _deleleteTask(

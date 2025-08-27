@@ -7,7 +7,8 @@ import 'package:tasksync/config/app_config/image_config.dart';
 import 'package:tasksync/views/helpers/toast_messenger.dart';
 
 class TaskInputRow extends StatelessWidget {
-  const TaskInputRow({super.key});
+  final bool isUpdate;
+  const TaskInputRow({super.key, this.isUpdate = false});
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +54,24 @@ class TaskInputRow extends StatelessWidget {
                             ),
                           )
                           .toList(),
-                      value: state.category.isEmpty ? "All" : state.category,
+                      value: isUpdate
+                          ? AppConstants.categoryList[state
+                                .selectedcategoryIndex]
+                          : (state.selectedcategoryIndex != null
+                                ? AppConstants.categoryList[state
+                                      .selectedcategoryIndex]
+                                : null),
+
                       // controlled by Bloc
                       onChanged: (String? value) {
                         if (value != null) {
+                          int index = AppConstants.categoryList.indexOf(value);
+                          print(index);
                           context.read<AddTaskBloc>().add(
-                            SelectCategoryEvent(category: value),
+                            SelectCategoryEvent(
+                              category: value,
+                              categoryIndex: index,
+                            ),
                           );
                         }
                       },
