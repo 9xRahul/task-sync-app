@@ -137,6 +137,7 @@ class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
     emit(state.copyWith(error: false, loading: true, message: ""));
 
     try {
+      print(state.category);
       Map<String, dynamic> taskDataResponse = await TaskRepository().addTask(
         title: event.taskName,
         description: event.taskDescription,
