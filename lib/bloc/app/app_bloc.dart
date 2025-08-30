@@ -7,12 +7,22 @@ part 'app_event.dart';
 part 'app_state.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
-  AppBloc() : super(AppState(isLoading: true, token: null, user: UserModel())) {
+  AppBloc()
+    : super(
+        AppState(isLoading: true, token: null, user: UserModel(), userName: ""),
+      ) {
     on<LoadToken>((event, emit) async {
       final token = await AuthStorage.getToken();
       final data = await AuthStorage.getUserInfo();
-
-      emit(AppState(isLoading: false, token: token, user: data));
+      final userName = data.name;
+      emit(
+        AppState(
+          isLoading: false,
+          token: token,
+          user: data,
+          userName: userName!,
+        ),
+      );
     });
 
     on<UpdateAppState>((event, emit) async {

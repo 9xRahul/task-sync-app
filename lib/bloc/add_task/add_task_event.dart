@@ -88,3 +88,5 @@ class UpdateTaskDetails extends AddTaskEvent {
   @override
   List<Object> get props => [taskName, taskDescription];
 }
+
+

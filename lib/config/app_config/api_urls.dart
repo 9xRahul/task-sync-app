@@ -15,4 +15,5 @@ class ApiUrls {
   static const String updateTask = "update/";
   static const String deleteTask = "delete/";
   static const String search = "search/";
+  static const String getAllTasks = "get-all-tasks-by-user/";
 }

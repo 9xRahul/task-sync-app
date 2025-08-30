@@ -7,6 +7,7 @@ import 'package:tasksync/bloc/bottom_nav/bottom_nav_bar_bloc.dart';
 import 'package:tasksync/bloc/home_screen/home_screen_bloc.dart';
 import 'package:tasksync/bloc/signin/signin_bloc.dart';
 import 'package:tasksync/bloc/signup/signup_bloc.dart' show SignupBloc;
+import 'package:tasksync/bloc/summary/summary_bloc.dart';
 
 import 'package:tasksync/config/app_config/size_config.dart';
 import 'package:tasksync/config/shared_preferences/auth_storage.dart';
@@ -24,6 +25,9 @@ void main() {
         ),
         BlocProvider(
           create: (_) => SigninBloc(authRepository: AuthRepository()),
+        ),
+        BlocProvider(
+          create: (_) => SummaryBloc(taskRepository: TaskRepository()),
         ),
         BlocProvider(create: (_) => HomeScreenBloc()),
         BlocProvider(create: (_) => BottomNavBarBloc()),
@@ -46,7 +50,7 @@ class MyApp extends StatelessWidget {
           if (state.isLoading) {
             return MaterialApp(
               debugShowCheckedModeBanner: false,
-              
+
               home: SplashScreen(),
             );
           }

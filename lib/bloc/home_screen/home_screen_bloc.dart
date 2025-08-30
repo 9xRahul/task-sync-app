@@ -11,7 +11,10 @@ part 'home_screen_event.dart';
 part 'home_screen_state.dart';
 
 class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
-  HomeScreenBloc() : super(HomeScreenState(selectedCategoryIndex: 0)) {
+  HomeScreenBloc()
+    : super(
+        HomeScreenState(selectedCategoryIndex: 0, tasks: [], filteredTasks: []),
+      ) {
     on<CategoryChangeEvent>(_categoryChangeEvent);
     on<SelectTasksWithItsStatusEvent>(_selectTaskStstus);
     on<GetTaskByStatus>(_getTasksByStatus);
@@ -21,6 +24,33 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
     on<DeleteTaskEvent>(_deleleteTask);
     on<SearchEvent>(_searchTask);
     on<SetSearchStstusEvent>(_setSearchStatus);
+    on<SelectSortEvent>(_selectSort);
+    on<DoSortEvent>(_sortEvent);
+  }
+
+  void _sortEvent(DoSortEvent event, Emitter<HomeScreenState> emit) {
+    try {
+      int sortIndex = state.sortIndex;
+      List<TaskModel> sortedList = List.from(state.tasks);
+      if (sortIndex == 1) {
+        sortedList.sort((a, b) => a.title!.compareTo(b.title!));
+      } else if (sortIndex == 2) {
+        sortedList.sort((a, b) => b.title!.compareTo(a.title!));
+      } else if (sortIndex == 3) {
+        sortedList.sort((a, b) => a.dueDate!.compareTo(b.dueDate!));
+      } else if (sortIndex == 4) {
+        sortedList.sort((a, b) => b.dueDate!.compareTo(a.dueDate!));
+      }
+      emit(state.copyWith(tasks: sortedList));
+    } catch (e) {
+      emit(state.copyWith());
+    }
+  }
+
+  void _selectSort(SelectSortEvent event, Emitter<HomeScreenState> emit) {
+    try {
+      emit(state.copyWith(sortIndex: event.sortIndex));
+    } catch (e) {}
   }
 
   void _setSearchStatus(

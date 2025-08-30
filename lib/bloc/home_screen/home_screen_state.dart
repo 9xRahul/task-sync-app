@@ -11,6 +11,7 @@ class HomeScreenState extends Equatable {
   final List<TaskModel> filteredByStstusList;
   final List<TaskModel> searchList;
   final bool isSearching;
+  final int sortIndex;
 
   HomeScreenState({
     this.selectedCategoryIndex = 0,
@@ -23,6 +24,7 @@ class HomeScreenState extends Equatable {
     this.filteredByStstusList = const [],
     this.searchList = const [],
     this.isSearching = false,
+    this.sortIndex = 1,
   });
 
   @override
@@ -37,6 +39,7 @@ class HomeScreenState extends Equatable {
     filteredByStstusList,
     searchList,
     isSearching,
+    sortIndex,
   ];
 
   HomeScreenState copyWith({
@@ -51,6 +54,7 @@ class HomeScreenState extends Equatable {
     List<TaskModel>? filteredByStstusList,
     List<TaskModel>? searchList,
     bool? isSearching,
+    int? sortIndex,
   }) {
     return HomeScreenState(
       selectedCategoryIndex:
@@ -64,6 +68,7 @@ class HomeScreenState extends Equatable {
       filteredByStstusList: filteredByStstusList ?? this.filteredByStstusList,
       searchList: searchList ?? this.searchList,
       isSearching: isSearching ?? this.isSearching,
+      sortIndex: sortIndex ?? this.sortIndex,
     );
   }
 }

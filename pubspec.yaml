@@ -23,6 +23,8 @@ dependencies:
   dropdown_button2: ^2.3.9
   google_fonts: ^6.3.0
   intl: ^0.20.2
+  percent_indicator: ^4.2.5
+  pie_chart: ^5.4.0
 
 dev_dependencies:
   flutter_test:

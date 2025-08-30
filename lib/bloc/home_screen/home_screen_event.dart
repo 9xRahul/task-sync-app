@@ -79,3 +79,15 @@ class SetSearchStstusEvent extends HomeScreenEvent {
   @override
   List<Object> get props => [isSearch];
 }
+
+class SelectSortEvent extends HomeScreenEvent {
+  final int sortIndex;
+
+  SelectSortEvent({required this.sortIndex});
+  @override
+  List<Object> get props => [sortIndex];
+}
+
+class DoSortEvent extends HomeScreenEvent {
+
+}

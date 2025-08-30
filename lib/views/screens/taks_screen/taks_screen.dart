@@ -17,6 +17,7 @@ import 'package:tasksync/views/screens/add_task_screen/add_task_screen.dart';
 import 'package:tasksync/views/screens/login_screen/signin_screen.dart';
 import 'package:tasksync/views/screens/taks_screen/widgets/category_item_widget.dart';
 import 'package:tasksync/views/screens/taks_screen/widgets/select_tasks_by_status_widget.dart';
+import 'package:tasksync/views/screens/taks_screen/widgets/sortDialog.dart';
 import 'package:tasksync/views/screens/taks_screen/widgets/task_list_widget.dart';
 
 class HomeScreenTasks extends StatefulWidget {
@@ -34,6 +35,10 @@ class _HomeScreenTasksState extends State<HomeScreenTasks> {
     // TODO: implement initState
     super.initState();
     getUserInfo();
+    getTasks();
+  }
+
+  void getTasks() {
     context.read<HomeScreenBloc>().add(GetAllTasks());
   }
 
@@ -42,12 +47,6 @@ class _HomeScreenTasksState extends State<HomeScreenTasks> {
     final token = await AuthStorage.getToken();
     if (!mounted) return;
     context.read<AppBloc>().add(UpdateAppState(token: token, user: userInfo));
-
-    // widget may have been disposed
-
-    setState(() {
-      user = userInfo.name ?? "Guest";
-    });
   }
 
   @override
@@ -83,11 +82,15 @@ class _HomeScreenTasksState extends State<HomeScreenTasks> {
                       height: 100,
                       width: 100,
                     ),
-                    textWidget(
-                      text: "Welcome\n$user",
-                      color: ColorConfig.textLight,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+                    BlocBuilder<AppBloc, AppState>(
+                      builder: (context, state) {
+                        return textWidget(
+                          text: "Welcome\n${state.user.name}",
+                          color: ColorConfig.textLight,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -251,17 +254,14 @@ class _HomeScreenTasksState extends State<HomeScreenTasks> {
                       );
                     },
                   ),
-                  appBarIconButton(
-                    icon: Icons.notifications,
-                    iconSize: SizeConfig().appBarIconSize,
-                    iconColor: ColorConfig.appBArIconColor,
-                    onPressed: () {},
-                  ),
+
                   appBarIconButton(
                     icon: Icons.more_vert,
                     iconSize: SizeConfig().appBarIconSize,
                     iconColor: ColorConfig.appBArIconColor,
-                    onPressed: () {},
+                    onPressed: () {
+                      sortDialog(context);
+                    },
                   ),
                 ],
               ),

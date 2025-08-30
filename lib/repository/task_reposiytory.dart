@@ -246,7 +246,10 @@ class TaskRepository {
     return apiResponse;
   }
 
-  Future<Map<String, dynamic>> searchTasks({required String query,required String status}) async {
+  Future<Map<String, dynamic>> searchTasks({
+    required String query,
+    required String status,
+  }) async {
     final apiResponse = {"status": false, "message": "", "data": []};
 
     final token = await AuthStorage.getToken();
@@ -260,7 +263,9 @@ class TaskRepository {
           ApiUrls.baseUrl +
           ApiUrls.task +
           ApiUrls.search; // e.g. /api/tasks/search
-      final uri = Uri.parse(url).replace(queryParameters: {"q": query,"status":status});
+      final uri = Uri.parse(
+        url,
+      ).replace(queryParameters: {"q": query, "status": status});
 
       final response = await http.get(
         uri,
@@ -294,6 +299,57 @@ class TaskRepository {
       apiResponse['status'] = false;
       apiResponse['message'] = e.toString();
       apiResponse['data'] = [];
+    }
+
+    return apiResponse;
+  }
+
+  Future<Map<String, dynamic>> getAllTasks() async {
+    var apiResponse = {"status": false, "message": "", "data": []};
+
+    final token = await AuthStorage.getToken();
+
+    print("Reached API call");
+    print("Token: $token");
+
+    try {
+      final url = ApiUrls.baseUrl + ApiUrls.task + ApiUrls.getAllTasks;
+
+      final response = await http.get(
+        Uri.parse(url),
+
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+
+        // Parse into TaskModel list
+        List<TaskModel> tasks = [];
+
+        var res = responseData['data'] as List; // cast to List
+        for (var json in responseData['data']) {
+          try {
+            final task = TaskModel.fromJson(json);
+            tasks.add(task);
+          } catch (e) {}
+        }
+
+        apiResponse['status'] = true;
+        apiResponse['message'] = "Tasks fetched successfully";
+        apiResponse['data'] = tasks;
+      } else {
+        apiResponse['status'] = false;
+        apiResponse['message'] = "No tasks added";
+        apiResponse['data'] = <TaskModel>[]; // empty list if failed
+      }
+    } catch (e) {
+      apiResponse['status'] = false;
+      apiResponse['message'] = e.toString();
+      apiResponse['data'] = <TaskModel>[]; // empty list on error
     }
 
     return apiResponse;
