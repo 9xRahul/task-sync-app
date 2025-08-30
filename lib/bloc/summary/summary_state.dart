@@ -8,6 +8,7 @@ class SummaryState extends Equatable {
   final int doneCount;
   final int pendingCount;
   final Map<String, double> pendingList;
+  final bool isScrolled;
 
   SummaryState({
     required this.isLoading,
@@ -17,6 +18,7 @@ class SummaryState extends Equatable {
     required this.doneCount,
     required this.pendingCount,
     required this.pendingList,
+    required this.isScrolled,
   });
 
   SummaryState copyWith({
@@ -27,6 +29,7 @@ class SummaryState extends Equatable {
     int? pendingCount,
     int? doneCount,
     Map<String, double>? pendingList,
+    bool? isScrolled,
   }) {
     return SummaryState(
       allTasks: allTasks ?? this.allTasks,
@@ -36,6 +39,7 @@ class SummaryState extends Equatable {
       doneCount: doneCount ?? this.doneCount,
       pendingCount: pendingCount ?? this.pendingCount,
       pendingList: pendingList ?? this.pendingList,
+      isScrolled: isScrolled ?? this.isScrolled,
     );
   }
 
@@ -48,5 +52,6 @@ class SummaryState extends Equatable {
     message,
     error,
     pendingList,
+    isScrolled,
   ];
 }

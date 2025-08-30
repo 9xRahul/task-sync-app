@@ -58,6 +58,7 @@ class CategoryPieChart extends StatelessWidget {
           child: Wrap(
             spacing: 10,
             children: categoryData.keys.map((key) {
+              final value = categoryData[key]?.toInt() ?? 0; // get value
               return Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -76,7 +77,7 @@ class CategoryPieChart extends StatelessWidget {
                   ),
                   const SizedBox(width: 5),
                   Text(
-                    key,
+                    "$key $value",
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],

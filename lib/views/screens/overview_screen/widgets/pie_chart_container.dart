@@ -26,7 +26,9 @@ Padding pieChartContainer(SummaryState state) {
           ),
         ],
       ),
-      child: CategoryPieChart(categoryData: state.pendingList),
+      child: state.pendingList.isEmpty
+          ? Image(image: AssetImage("assets/images/nopending.png"))
+          : CategoryPieChart(categoryData: state.pendingList),
     ),
   );
 }

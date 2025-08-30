@@ -19,9 +19,15 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
           doneCount: 0,
           pendingCount: 0,
           pendingList: {},
+          isScrolled: false,
         ),
       ) {
     on<LoadTasks>(_getAllTasks);
+    on<ScrollEvent>(_scrollTheScreen);
+  }
+
+  void _scrollTheScreen(ScrollEvent event, Emitter<SummaryState> emit) {
+    emit(state.copyWith(isScrolled: true));
   }
 
   void _getAllTasks(LoadTasks event, Emitter<SummaryState> emit) async {
