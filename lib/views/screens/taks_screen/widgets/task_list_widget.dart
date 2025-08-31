@@ -39,8 +39,8 @@ class TasksItems extends StatelessWidget {
                         children: [
                           Lottie.asset(
                             'assets/animations/searching.json',
-                            width: 300,
-                            height: 300,
+                            width: 200,
+                            height: 200,
                             repeat: true,
                           ),
                         ],

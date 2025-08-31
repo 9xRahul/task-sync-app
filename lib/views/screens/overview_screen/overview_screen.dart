@@ -9,7 +9,6 @@ import 'package:tasksync/config/app_config/color_config.dart';
 import 'package:tasksync/config/app_config/image_config.dart';
 import 'package:tasksync/config/app_config/size_config.dart';
 import 'package:tasksync/views/helpers/empty_container.dart';
-import 'package:tasksync/views/helpers/floatting_sction_button.dart';
 import 'package:tasksync/views/helpers/text_widget.dart';
 import 'package:tasksync/views/screens/overview_screen/widgets/pie_chart_container.dart';
 import 'package:tasksync/views/screens/overview_screen/widgets/summary_widget.dart';
@@ -31,7 +30,6 @@ class _OverViewScreenState extends State<OverViewScreen> {
 
     _scrollController.addListener(() {
       final isScrolled = _scrollController.offset > 1;
-      print(isScrolled);
       context.read<SummaryBloc>().add(ScrollEvent(isScrolled: isScrolled));
       _setStatusBarColor(isScrolled ? Colors.pink : Colors.white);
     });
@@ -40,7 +38,7 @@ class _OverViewScreenState extends State<OverViewScreen> {
   void _setStatusBarColor(Color color) {
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light, // adjust icons color
+      statusBarIconBrightness: Brightness.light,
     );
   }
 
@@ -52,7 +50,6 @@ class _OverViewScreenState extends State<OverViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("rebuild overview");
     return BlocBuilder<SummaryBloc, SummaryState>(
       builder: (context, state) {
         return Scaffold(
@@ -67,78 +64,76 @@ class _OverViewScreenState extends State<OverViewScreen> {
                 fit: BoxFit.cover,
               ),
             ),
-            child: SingleChildScrollView(
-              controller: _scrollController, // ✅ attached
-              child: Column(
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).padding.top,
-                    ),
-                    height: kToolbarHeight + MediaQuery.of(context).padding.top,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(ImageConfig.splashBg),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(
-                            Icons.arrow_back_ios_new,
-                            color: ColorConfig.appBArIconColor,
-                            size: SizeConfig().appBarIconSize,
-                          ),
-                          onPressed: () {
-                            context.read<BottomNavBarBloc>().add(
-                              BottomnavItemChangeEvent(index: 0),
-                            );
-                          },
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 0,
-                          ),
-                          child: textWidget(
-                            text: "Summary",
-                            color: ColorConfig.appBArIconColor,
-                            fontSize: SizeConfig().appBarFontSize,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+            child: Column(
+              children: [
+                // ✅ TopBar always visible
+                Container(
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top,
+                  ),
+                  height: kToolbarHeight + MediaQuery.of(context).padding.top,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(ImageConfig.splashBg),
+                      fit: BoxFit.cover,
                     ),
                   ),
-
-                  state.isLoading
-                      ? Center(
-                          child: Column(
-                            children: [
-                              EmptyContainer.verticalEmptyContainer(
-                                height: SizeConfig.screenHeight / 5,
-                              ),
-                              Lottie.asset(
-                                'assets/animations/searching.json',
-                                width: 300,
-                                height: 300,
-                                repeat: true,
-                              ),
-                            ],
-                          ),
-                        )
-                      : Column(
-                          children: [
-                            summaryWidget(state),
-                            EmptyContainer.verticalEmptyContainer(height: 10),
-                            !state.isLoading
-                                ? pieChartContainer(state)
-                                : Container(height: SizeConfig.screenHeight),
-                          ],
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios_new,
+                          color: ColorConfig.appBArIconColor,
+                          size: SizeConfig().appBarIconSize,
                         ),
-                ],
-              ),
+                        onPressed: () {
+                          context.read<BottomNavBarBloc>().add(
+                            BottomnavItemChangeEvent(index: 0),
+                          );
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 10,
+                          horizontal: 0,
+                        ),
+                        child: textWidget(
+                          text: "Summary",
+                          color: ColorConfig.appBArIconColor,
+                          fontSize: SizeConfig().appBarFontSize,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // ✅ Only show loader when isLoading = true
+                if (state.isLoading)
+                  Expanded(
+                    child: Center(
+                      child: Lottie.asset(
+                        'assets/animations/searching.json',
+                        width: 200,
+                        height: 200,
+                        repeat: true,
+                      ),
+                    ),
+                  )
+                else
+                  Expanded(
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      child: Column(
+                        children: [
+                          summaryWidget(state),
+                          EmptyContainer.verticalEmptyContainer(height: 10),
+                          pieChartContainer(state),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         );
