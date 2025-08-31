@@ -10,8 +10,10 @@ import 'package:tasksync/config/app_config/image_config.dart';
 import 'package:tasksync/config/app_config/size_config.dart';
 import 'package:tasksync/config/shared_preferences/auth_storage.dart';
 import 'package:tasksync/views/helpers/app_bacr_icons.dart';
+import 'package:tasksync/views/helpers/draggable_fab.dart';
 import 'package:tasksync/views/helpers/drawer_list_tile.dart';
 import 'package:tasksync/views/helpers/empty_container.dart';
+import 'package:tasksync/views/helpers/floatting_sction_button.dart';
 import 'package:tasksync/views/helpers/text_widget.dart';
 import 'package:tasksync/views/screens/add_task_screen/add_task_screen.dart';
 import 'package:tasksync/views/screens/login_screen/signin_screen.dart';
@@ -134,168 +136,174 @@ class _HomeScreenTasksState extends State<HomeScreenTasks> {
           ),
         ),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(ImageConfig.splashBg), // your asset path
-            opacity: .1,
-            fit: BoxFit.cover, // make it fill the screen
-          ),
-        ),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-              height: kToolbarHeight + MediaQuery.of(context).padding.top,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(ImageConfig.splashBg),
-                  fit: BoxFit.cover,
-                ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(ImageConfig.splashBg), // your asset path
+                opacity: .1,
+                fit: BoxFit.cover, // make it fill the screen
               ),
-              child: Row(
-                children: [
-                  Builder(
-                    builder: (context) => IconButton(
-                      icon: Icon(
-                        Icons.menu,
-                        color: ColorConfig.appBArIconColor,
-                        size: SizeConfig().appBarIconSize,
-                      ),
-                      onPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
+            ),
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top,
+                  ),
+                  height: kToolbarHeight + MediaQuery.of(context).padding.top,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(ImageConfig.splashBg),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  BlocBuilder<HomeScreenBloc, HomeScreenState>(
-                    builder: (context, state) {
-                      return Expanded(
-                        child: state.isSearching
-                            ? Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 10,
-                                  horizontal: 0,
-                                ),
-                                child: TextField(
-                                  onChanged: (value) {
-                                    // 👇 send search query to your Bloc
-                                    context.read<HomeScreenBloc>().add(
-                                      SearchEvent(query: value),
-                                    );
-                                  },
-
-                                  decoration: InputDecoration(
-                                    hintText: "Search tasks...",
-                                    hintStyle: TextStyle(
-                                      color: ColorConfig
-                                          .appBArIconColor, // your hint color
-                                      fontSize: SizeConfig().appBarFontSize,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    filled: true,
-                                    isDense: true,
-                                    fillColor: Colors
-                                        .white, // ✅ background inside text box
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                      borderSide:
-                                          BorderSide.none, // ✅ no border line
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                      borderSide:
-                                          BorderSide.none, // ✅ no border line
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                      borderSide:
-                                          BorderSide.none, // ✅ no border line
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
+                  child: Row(
+                    children: [
+                      Builder(
+                        builder: (context) => IconButton(
+                          icon: Icon(
+                            Icons.menu,
+                            color: ColorConfig.appBArIconColor,
+                            size: SizeConfig().appBarIconSize,
+                          ),
+                          onPressed: () {
+                            Scaffold.of(context).openDrawer();
+                          },
+                        ),
+                      ),
+                      BlocBuilder<HomeScreenBloc, HomeScreenState>(
+                        builder: (context, state) {
+                          return Expanded(
+                            child: state.isSearching
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
                                       vertical: 10,
+                                      horizontal: 0,
                                     ),
-                                  ),
-                                  style: GoogleFonts.aBeeZee().copyWith(
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ), // ✅ typed text in black
-                                ),
-                              )
-                            : textWidget(
-                                text: "TaskSync",
-                                color: ColorConfig.appBArIconColor,
-                                fontSize: SizeConfig().appBarFontSize,
-                                fontWeight: FontWeight.bold,
-                              ),
-                      );
-                    },
-                  ),
+                                    child: TextField(
+                                      onChanged: (value) {
+                                        // 👇 send search query to your Bloc
+                                        context.read<HomeScreenBloc>().add(
+                                          SearchEvent(query: value),
+                                        );
+                                      },
 
-                  BlocBuilder<HomeScreenBloc, HomeScreenState>(
-                    builder: (context, state) {
-                      return appBarIconButton(
-                        icon: state.isSearching ? Icons.close : Icons.search,
+                                      decoration: InputDecoration(
+                                        hintText: "Search tasks...",
+                                        hintStyle: TextStyle(
+                                          color: ColorConfig
+                                              .appBArIconColor, // your hint color
+                                          fontSize: SizeConfig().appBarFontSize,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        filled: true,
+                                        isDense: true,
+                                        fillColor: Colors
+                                            .white, // ✅ background inside text box
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ),
+                                          borderSide: BorderSide
+                                              .none, // ✅ no border line
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ),
+                                          borderSide: BorderSide
+                                              .none, // ✅ no border line
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ),
+                                          borderSide: BorderSide
+                                              .none, // ✅ no border line
+                                        ),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 10,
+                                            ),
+                                      ),
+                                      style: GoogleFonts.aBeeZee().copyWith(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ), // ✅ typed text in black
+                                    ),
+                                  )
+                                : textWidget(
+                                    text: "TaskSync",
+                                    color: ColorConfig.appBArIconColor,
+                                    fontSize: SizeConfig().appBarFontSize,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                          );
+                        },
+                      ),
+
+                      BlocBuilder<HomeScreenBloc, HomeScreenState>(
+                        builder: (context, state) {
+                          return appBarIconButton(
+                            icon: state.isSearching
+                                ? Icons.close
+                                : Icons.search,
+                            iconSize: SizeConfig().appBarIconSize,
+                            iconColor: ColorConfig.appBArIconColor,
+                            onPressed: () {
+                              final current = context
+                                  .read<HomeScreenBloc>()
+                                  .state
+                                  .isSearching;
+                              print(current);
+                              context.read<HomeScreenBloc>().add(
+                                SetSearchStstusEvent(
+                                  isSearch: !current,
+                                ), // <-- aligned name
+                              );
+                            },
+                          );
+                        },
+                      ),
+
+                      appBarIconButton(
+                        icon: Icons.more_vert,
                         iconSize: SizeConfig().appBarIconSize,
                         iconColor: ColorConfig.appBArIconColor,
                         onPressed: () {
-                          final current = context
-                              .read<HomeScreenBloc>()
-                              .state
-                              .isSearching;
-                          print(current);
-                          context.read<HomeScreenBloc>().add(
-                            SetSearchStstusEvent(
-                              isSearch: !current,
-                            ), // <-- aligned name
-                          );
+                          sortDialog(context);
                         },
-                      );
-                    },
+                      ),
+                    ],
                   ),
+                ),
 
-                  appBarIconButton(
-                    icon: Icons.more_vert,
-                    iconSize: SizeConfig().appBarIconSize,
-                    iconColor: ColorConfig.appBArIconColor,
-                    onPressed: () {
-                      sortDialog(context);
-                    },
-                  ),
-                ],
-              ),
+                categoryItemWidget(context: context),
+                SelectTasksByStatusWidget(context: context),
+
+                TasksItems(),
+              ],
             ),
-
-            categoryItemWidget(context: context),
-            SelectTasksByStatusWidget(context: context),
-
-            TasksItems(),
-          ],
-        ),
+          ),
+          // DraggableFab(
+          //   child: Lottie.asset(
+          //     'assets/animations/add.json',
+          //     width: 60,
+          //     height: 60,
+          //     fit: BoxFit.cover,
+          //     repeat: true, // repeat animation
+          //   ),
+          //   onPressed: () {
+          //     print("FAB clicked");
+          //   },
+          // ),
+        ],
       ),
-
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.transparent, // Make FAB background transparent
-        elevation: 0, // Remove shadow
-        highlightElevation: 0,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => AddTaskScreen()),
-          ).then((_) {
-            context.read<HomeScreenBloc>().add(GetAllTasks());
-          });
-        },
-
-        child: Lottie.asset(
-          'assets/animations/add.json',
-          width: 60,
-          height: 60,
-          fit: BoxFit.cover,
-          repeat: true, // repeat animation
-        ),
-      ),
+      floatingActionButton: FloattingSctionButton(context),
     );
   }
 }

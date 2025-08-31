@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _pages = [
     const HomeScreenTasks(),
-    CalenderScreen(),
+    CalendarScreen(),
     const OverViewScreen(),
   ];
 
@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return BottomNavigationBar(
             currentIndex: state.bottomNavIndex,
             selectedItemColor: Colors.pink,
-            unselectedItemColor: Colors.grey,
+            unselectedItemColor: Colors.black,
             onTap: (index) {
               context.read<BottomNavBarBloc>().add(
                 BottomnavItemChangeEvent(index: index),

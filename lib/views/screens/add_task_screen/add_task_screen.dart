@@ -30,8 +30,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   @override
   void initState() {
     // TODO: implement initState
+
     super.initState();
     if (widget.isUpdate == true) {
+     
     } else {
       context.read<AddTaskBloc>().add(ResetAllEvent());
     }

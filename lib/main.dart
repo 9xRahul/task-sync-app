@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tasksync/bloc/add_task/add_task_bloc.dart';
 import 'package:tasksync/bloc/app/app_bloc.dart';
 import 'package:tasksync/bloc/bottom_nav/bottom_nav_bar_bloc.dart';
+import 'package:tasksync/bloc/calender/calender_bloc.dart';
 import 'package:tasksync/bloc/home_screen/home_screen_bloc.dart';
 import 'package:tasksync/bloc/signin/signin_bloc.dart';
 import 'package:tasksync/bloc/signup/signup_bloc.dart' show SignupBloc;
@@ -34,6 +35,9 @@ void main() {
         BlocProvider(
           create: (_) => AddTaskBloc(taskRepository: TaskRepository()),
         ),
+        BlocProvider(
+          create: (_) => CalendarBloc(taskRepository: TaskRepository()),
+        ),
       ],
       child: MyApp(),
     ),
@@ -57,7 +61,7 @@ class MyApp extends StatelessWidget {
 
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: ThemeData(textTheme: GoogleFonts.aBeeZeeTextTheme()),
+            theme: ThemeData(textTheme: GoogleFonts.poorStoryTextTheme()),
             home: Builder(
               builder: (context) {
                 SizeConfig.initialize(context);
