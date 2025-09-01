@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "56671130582",
+    "project_id": "task-sync-c413a",
+    "storage_bucket": "task-sync-c413a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:56671130582:android:06139789a6736a3e864a77",
+        "android_client_info": {
+          "package_name": "com.rahul.tasksync"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1a-lmGxsbNNwgFZpnbpcLf8oKnYKQD2A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

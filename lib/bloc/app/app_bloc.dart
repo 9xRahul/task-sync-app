@@ -20,7 +20,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           isLoading: false,
           token: token,
           user: data,
-          userName: userName!,
+          userName: userName ?? "",
         ),
       );
     });
