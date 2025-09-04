@@ -66,3 +66,11 @@ linux/build/
 *.swp
 *.DS_Store
 *.lock
+
+*.jks
+*.keystore
+android/app/*.jks
+android/app/key/*.jks
+key.properties
+
+android/app/key/upload.jks

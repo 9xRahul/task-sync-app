@@ -24,7 +24,22 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
     on<LoginSubmitted>(_loginSubmitted);
     on<ResetPasswordEvent>(_resetPasswordEvent);
     on<UpdatePasswordEvent>(_updatePasswordEvent);
+    on<LogoutUserEvent>(_logout);
   }
+
+  void _logout(LogoutUserEvent event, Emitter<SigninState> emit) async {
+    emit(state.copyWith(logoutLoading: true));
+    try {
+      print("Logout triggered");
+      final data = await AuthStorage.getUserInfo();
+      print(data.name);
+      print(" email :${data.name}");
+      final response = authRepository.logoutUser(email: data.email!);
+      print(response);
+      emit(state.copyWith(logoutLoading: false));
+    } catch (e) {}
+  }
+
   void _loginSubmitted(LoginSubmitted event, Emitter<SigninState> emit) async {
     emit(
       state.copyWith(loading: true, error: false, message: "", authToken: ""),

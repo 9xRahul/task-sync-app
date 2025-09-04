@@ -1,3 +1,7 @@
+import java.util.Properties
+import java.io.FileInputStream
+
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -8,6 +12,15 @@ plugins {
 
 }
 
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+    println("Loaded keystore from: ${keystorePropertiesFile.path}")
+} else {
+    println("key.properties not found at: ${keystorePropertiesFile.path}")
+}
+
 android {
     namespace = "com.rahul.tasksync"
     compileSdk = flutter.compileSdkVersion
@@ -16,6 +29,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -35,11 +49,45 @@ android {
 
     }
 
+       signingConfigs {
+        create("release") {
+            val storePath = keystoreProperties["storeFile"] as String?
+            if (storePath != null) {
+                storeFile = file(storePath)   // file() takes a String path
+            }
+            keyAlias = keystoreProperties["keyAlias"] as String?
+            keyPassword = keystoreProperties["keyPassword"] as String?
+            storePassword = keystoreProperties["storePassword"] as String?
+        }
+    }
+
+
+     
     buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+        getByName("release") {
+            // ✅ Turn on code shrinking (R8)
+            isMinifyEnabled = true
+
+            // ✅ Now you can shrink resources
+            // AGP 8+: use isShrinkResources
+            isShrinkResources = true
+            // If your AGP is older and this line errors, use:
+            // setShrinkResources(true)
+
+            // Optional but recommended ProGuard config
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+
+            // Keep your signing config if you set it:
+            // signingConfig = signingConfigs.getByName("release")
+        }
+
+        getByName("debug") {
+            isMinifyEnabled = false
+            // Make sure you do NOT set shrink resources in debug
+            // isShrinkResources = false
         }
     }
 }
@@ -63,6 +111,7 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
 }
 

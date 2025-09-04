@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tasksync/bloc/app/app_bloc.dart';
 import 'package:tasksync/bloc/home_screen/home_screen_bloc.dart';
+import 'package:tasksync/bloc/signin/signin_bloc.dart';
 import 'package:tasksync/config/app_config/color_config.dart';
 import 'package:tasksync/config/app_config/image_config.dart';
 import 'package:tasksync/config/app_config/size_config.dart';
@@ -18,6 +19,7 @@ import 'package:tasksync/views/helpers/text_widget.dart';
 import 'package:tasksync/views/screens/add_task_screen/add_task_screen.dart';
 import 'package:tasksync/views/screens/login_screen/signin_screen.dart';
 import 'package:tasksync/views/screens/taks_screen/widgets/category_item_widget.dart';
+import 'package:tasksync/views/screens/taks_screen/widgets/privacy_policy.dart';
 import 'package:tasksync/views/screens/taks_screen/widgets/select_tasks_by_status_widget.dart';
 import 'package:tasksync/views/screens/taks_screen/widgets/sortDialog.dart';
 import 'package:tasksync/views/screens/taks_screen/widgets/task_list_widget.dart';
@@ -99,23 +101,40 @@ class _HomeScreenTasksState extends State<HomeScreenTasks> {
               ),
 
               drawerListTile(
-                title: "Home",
-                icon: Icons.home,
+                title: "Prvacy Policy",
+                icon: Icons.privacy_tip_outlined,
                 iconColor: ColorConfig.textPrimary,
                 iconSize: SizeConfig().drawerIconSize,
                 textSize: SizeConfig().drawerFontSize,
                 onTap: () {
-                  print("Home tapped");
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => PolicyWebViewPage(
+                        isPrivacy: true,
+                        url:
+                            'https://www.freeprivacypolicy.com/live/327a1723-33b0-428e-863e-51155f360754',
+                      ),
+                    ),
+                  );
                 },
               ),
               drawerListTile(
-                title: "Settings",
-                icon: Icons.settings,
+                title: "About",
+                icon: Icons.perm_scan_wifi_outlined,
                 iconColor: ColorConfig.textPrimary,
                 iconSize: SizeConfig().drawerIconSize,
                 textSize: SizeConfig().drawerFontSize,
                 onTap: () {
-                  print("Settings tapped");
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => PolicyWebViewPage(
+                        isPrivacy: false,
+                        url: 'https://thetasksync.carrd.co/',
+                      ),
+                    ),
+                  );
                 },
               ),
               drawerListTile(
@@ -125,7 +144,8 @@ class _HomeScreenTasksState extends State<HomeScreenTasks> {
                 iconSize: SizeConfig().drawerIconSize,
                 textSize: SizeConfig().drawerFontSize,
                 onTap: () {
-                  AuthStorage.logout();
+                  context.read<SigninBloc>().add(LogoutUserEvent());
+                  // AuthStorage.logout();
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) => LoginScreen()),
                     (Route<dynamic> route) => false,

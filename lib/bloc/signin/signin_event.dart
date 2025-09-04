@@ -34,3 +34,5 @@ class UpdatePasswordEvent extends SigninEvent {
   @override
   List<Object> get props => [newPassword];
 }
+
+class LogoutUserEvent extends SigninEvent {}

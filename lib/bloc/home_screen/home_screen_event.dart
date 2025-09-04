@@ -88,6 +88,6 @@ class SelectSortEvent extends HomeScreenEvent {
   List<Object> get props => [sortIndex];
 }
 
-class DoSortEvent extends HomeScreenEvent {
+class DoSortEvent extends HomeScreenEvent {}
 
-}
+class LogoutEvent extends HomeScreenEvent {}

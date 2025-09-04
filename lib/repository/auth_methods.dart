@@ -1,11 +1,44 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 import 'package:tasksync/config/app_config/api_urls.dart';
 import 'package:tasksync/config/shared_preferences/auth_storage.dart';
 import 'package:tasksync/models/user_model.dart';
 
 class AuthRepository {
+  static final _fcm = FirebaseMessaging.instance;
+
+  Future<Map<String, dynamic>> logoutUser({required String email}) async {
+    final apiResponse = {"status": false, "message": ""};
+    print("logout called");
+    try {
+      String? token = await _fcm.getToken();
+      print("🗑 Logout FCM Token: $token");
+
+      final response = await http.post(
+        Uri.parse(ApiUrls.baseUrl + ApiUrls.auth + ApiUrls.logout),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"email": email, "fcmToken": token}),
+      );
+      print(response.body);
+      if (response.statusCode == 200) {
+        AuthStorage.logout();
+        apiResponse['status'] = true;
+        apiResponse['message'] = "Logged out ";
+      } else {
+        apiResponse['status'] = true;
+        apiResponse['message'] = "Error in logout";
+      }
+    } catch (e, stackTrace) {
+      print("❌ Logout error: $e");
+      print("📌 Stack trace: $stackTrace");
+      apiResponse['status'] = true;
+      apiResponse['message'] = "Error in logout";
+    }
+    return apiResponse;
+  }
+
   Future<Map<String, dynamic>> login({
     required String email,
     required String password,
@@ -18,11 +51,18 @@ class AuthRepository {
       "token": "",
     };
 
+    String? token = await _fcm.getToken();
+    print("🔑 Login FCM Token: $token");
+
     try {
       final response = await http.post(
         Uri.parse(ApiUrls.baseUrl + ApiUrls.auth + ApiUrls.login),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"email": email, "password": password}),
+        body: jsonEncode({
+          "email": email,
+          "password": password,
+          "fcmToken": token,
+        }),
       );
 
       if (response.statusCode == 200) {

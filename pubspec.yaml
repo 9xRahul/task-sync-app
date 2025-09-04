@@ -25,11 +25,22 @@ dependencies:
   intl: ^0.20.2
   percent_indicator: ^4.2.5
   pie_chart: ^5.4.0
+  firebase_core: ^4.0.0
+  firebase_messaging: ^16.0.0
+  flutter_local_notifications: ^19.4.1
+  webview_flutter: ^4.13.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4 # ✅ package goes here only
+
+flutter_icons: # ✅ config must be named this
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo.png"
+  min_sdk_android: 21
 
 flutter:
   uses-material-design: true

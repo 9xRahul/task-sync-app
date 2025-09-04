@@ -11,7 +11,8 @@ part 'home_screen_event.dart';
 part 'home_screen_state.dart';
 
 class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
-  HomeScreenBloc()
+  TaskRepository taskRepository;
+  HomeScreenBloc({required this.taskRepository})
     : super(
         HomeScreenState(selectedCategoryIndex: 0, tasks: [], filteredTasks: []),
       ) {
@@ -133,7 +134,7 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
   ) async {
     try {
       print("id in update ${event.taskId} ${event.taskStatus}");
-      var response = await TaskRepository().updateTaskStatus(
+      var response = await taskRepository.updateTaskStatus(
         sId: event.taskId,
         status: event.taskStatus,
       );
@@ -152,7 +153,7 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
       print("${state.selectedCategoryIndex}");
       print(state.taskStatus.name);
 
-      final response = await TaskRepository().getTasks(
+      final response = await taskRepository.getTasks(
         category: state.selectedCategoryIndex == 0
             ? AppConstants.categoryList[0]
             : AppConstants.categoryList[state.selectedCategoryIndex],
