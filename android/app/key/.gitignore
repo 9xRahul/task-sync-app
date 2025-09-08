@@ -19,6 +19,6 @@ android/app/*.jks
 android/app/key/*.jks
 key.properties
 
-upload.jks
-upload
+tasksync.jks
+tasksync
 *.aab

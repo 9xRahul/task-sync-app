@@ -1,6 +1,6 @@
 import java.util.Properties
 import java.io.FileInputStream
-
+import java.io.File
 
 plugins {
     id("com.android.application")
@@ -8,15 +8,21 @@ plugins {
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
     id("com.google.gms.google-services")
-
-
 }
 
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
 if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-    println("Loaded keystore from: ${keystorePropertiesFile.path}")
+    try {
+        // Load properties (use forward slashes in key.properties to avoid \u problems)
+        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+        println("Loaded keystore from: ${keystorePropertiesFile.path}")
+    } catch (e: Exception) {
+        println("Failed to load key.properties: ${e.message}")
+        println("Common cause: backslashes in Windows paths like C:\\Users\\... are interpreted as escape sequences.")
+        println("Try using forward slashes (D:/key/tasksync.jks) or escaping backslashes (D:\\\\key\\\\tasksync.jks).")
+        throw e
+    }
 } else {
     println("key.properties not found at: ${keystorePropertiesFile.path}")
 }
@@ -37,57 +43,61 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.rahul.tasksync"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-         multiDexEnabled = true
-
+        multiDexEnabled = true
     }
 
-       signingConfigs {
+    // Create release signing config and validate keystore exists
+    signingConfigs {
         create("release") {
-            val storePath = keystoreProperties["storeFile"] as String?
-            if (storePath != null) {
-                storeFile = file(storePath)   // file() takes a String path
+            val storePathRaw = (keystoreProperties["storeFile"] as String?)?.trim()
+            if (storePathRaw != null && storePathRaw.isNotEmpty()) {
+                // normalize Windows backslashes if user used them
+                val normalizedPath = storePathRaw.replace("\\\\", "/").replace("\\", "/")
+                val candidate = file(normalizedPath)
+                if (!candidate.exists()) {
+                    // Helpful message and guidance
+                    println("ERROR: Keystore file does not exist at path from key.properties: $storePathRaw")
+                    println("Tried normalized path: ${candidate.path}")
+                    println("Recommendations:")
+                    println("  - Use forward slashes in key.properties: storeFile=D:/key/tasksync.jks")
+                    println("  - Or put the keystore inside your project (android/app/tasksync.jks) and set storeFile=android/app/tasksync.jks")
+                    throw GradleException("Keystore not found at: $storePathRaw. Build cannot continue until keystore is available.")
+                } else {
+                    storeFile = candidate
+                    println("Using keystore at: ${candidate.path}")
+                }
+            } else {
+                println("ERROR: 'storeFile' is not set in key.properties")
+                throw GradleException("'storeFile' not defined in key.properties. Build cannot continue for release signing.")
             }
+
             keyAlias = keystoreProperties["keyAlias"] as String?
             keyPassword = keystoreProperties["keyPassword"] as String?
             storePassword = keystoreProperties["storePassword"] as String?
         }
     }
 
-
-     
     buildTypes {
         getByName("release") {
-            // ✅ Turn on code shrinking (R8)
+            // Turn on code shrinking (R8)
             isMinifyEnabled = true
 
-            // ✅ Now you can shrink resources
-            // AGP 8+: use isShrinkResources
+            // Shrink resources
             isShrinkResources = true
-            // If your AGP is older and this line errors, use:
-            // setShrinkResources(true)
 
-            // Optional but recommended ProGuard config
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+    
 
-            // Keep your signing config if you set it:
-            // signingConfig = signingConfigs.getByName("release")
+            // Attach signing config (must exist otherwise we have already thrown a helpful error)
+            signingConfig = signingConfigs.getByName("release")
         }
 
         getByName("debug") {
             isMinifyEnabled = false
-            // Make sure you do NOT set shrink resources in debug
-            // isShrinkResources = false
         }
     }
 }
@@ -95,23 +105,22 @@ android {
 flutter {
     source = "../.."
 }
+
 dependencies {
-     implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
-    // ✅ Multidex
+    // Multidex
     implementation("androidx.multidex:multidex:2.0.1")
 
-    // ✅ Firebase BOM (keeps versions aligned)
+    // Firebase BOM
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
 
-    // ✅ Firebase SDKs (pick what you need)
+    // Firebase SDKs
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
-
 }
-
